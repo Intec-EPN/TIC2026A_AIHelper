@@ -207,7 +207,7 @@ $string['topics_modal_concepts_required'] = 'Debes agregar al menos un concepto 
 
 // Vista General - columnas y navegacion.
 $string['col_activity']       = 'Actividad';
-$string['col_students']       = 'Estudiantes';
+$string['col_students']       = '# Solicitudes';
 $string['col_errors']         = 'Errores frecuentes';
 $string['col_concepts']       = 'Conceptos';
 $string['col_resources']      = 'Recursos';
