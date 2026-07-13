@@ -1,0 +1,954 @@
+{{!
+    Vista General del profesor: Actividades - Detalle VPL - Detalle Estudiante.
+
+}}
+<div class="slm-report-wrapper">
+
+    {{! PESTANAS PRINCIPALES }}
+    <ul class="nav nav-tabs mb-0" role="tablist">
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_general}}active{{/active_general}}" href="{{nav_general_url}}">{{str_nav_general}}</a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_catalog}}active{{/active_catalog}}" href="{{nav_catalog_url}}">{{str_nav_catalog}}</a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_config}}active{{/active_config}}" href="{{nav_config_url}}">{{str_nav_config}}</a>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-3 bg-white">
+
+        {{! vistas principales}}
+        {{#show_activities}}
+        <div class="d-flex mb-3">
+            <div class="navitem">
+                <nav class="tertiary-navigation-selector">
+                    <div class="dropdown select-menu">
+                        <div class="btn btn-outline-secondary dropdown-toggle"
+                             role="combobox" data-bs-toggle="dropdown"
+                             aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+                            {{subview_label}}
+                        </div>
+                        <ul class="dropdown-menu" role="listbox">
+                            <li role="none">
+                                <ul role="group" class="list-unstyled mb-0">
+                                    <li class="dropdown-item {{#subview_activities_active}}active{{/subview_activities_active}}"
+                                        role="option" data-value="{{url_activities}}" style="cursor:pointer;">
+                                        {{str_subview_activities}}
+                                    </li>
+                                    <li class="dropdown-item {{#subview_concepts_active}}active{{/subview_concepts_active}}"
+                                        role="option" data-value="{{url_concepts}}" style="cursor:pointer;">
+                                        {{str_subview_concepts}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        {{/show_activities}}
+        {{#show_concepts}}
+        <div class="d-flex mb-3">
+            <div class="navitem">
+                <nav class="tertiary-navigation-selector">
+                    <div class="dropdown select-menu">
+                        <div class="btn btn-outline-secondary dropdown-toggle"
+                             role="combobox" data-bs-toggle="dropdown"
+                             aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+                            {{subview_label}}
+                        </div>
+                        <ul class="dropdown-menu" role="listbox">
+                            <li role="none">
+                                <ul role="group" class="list-unstyled mb-0">
+                                    <li class="dropdown-item {{#subview_activities_active}}active{{/subview_activities_active}}"
+                                        role="option" data-value="{{url_activities}}" style="cursor:pointer;">
+                                        {{str_subview_activities}}
+                                    </li>
+                                    <li class="dropdown-item {{#subview_concepts_active}}active{{/subview_concepts_active}}"
+                                        role="option" data-value="{{url_concepts}}" style="cursor:pointer;">
+                                        {{str_subview_concepts}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        {{/show_concepts}}
+
+        {{!  TABLA DE ACTIVIDADES }}
+        {{#show_activities}}
+        {{#has_activities}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle slm-general-table">
+                <thead class="table-light">
+                    <tr>
+                        <th class="slm-col-activity">{{str_col_activity}}</th>
+                        <th class="text-center slm-col-sm">{{str_col_students}}</th>
+                        <th class="slm-col-md">{{str_col_errors}}</th>
+                        <th class="slm-col-md">{{str_col_concepts}}</th>
+                        <th class="slm-col-md">{{str_col_resources}}</th>
+                        <th class="slm-col-md">{{str_col_examples}}</th>
+                        <th class="text-center slm-col-sm">{{str_col_detail}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#activities}}
+                    <tr>
+                        {{! Nombre de la actividad }}
+                        <td>
+                            <a href="{{url}}" target="_blank" class="fw-semibold text-decoration-none text-dark">
+                                <i class="fa fa-code fa-fw text-secondary me-1"></i>{{name}}
+                            </a>
+                        </td>
+                        {{! Cantidad de estudiantes }}
+                        <td class="text-center">
+                            {{#has_data}}
+                            <span class="badge bg-primary rounded-pill">{{student_count}}</span>
+                            {{/has_data}}
+                            {{^has_data}}
+                            <span class="text-muted small">—</span>
+                            {{/has_data}}
+                        </td>
+                        {{! Errores frecuentes }}
+                        <td>
+                            {{#top_errors}}
+                            <div class="slm-tag slm-tag-error mb-1">
+                                {{! <i class="fa fa-bug fa-fw"></i> }}
+                                {{titulo}}
+                            </div>
+                            {{/top_errors}}
+                            {{^top_errors}}<span class="text-muted small">—</span>{{/top_errors}}
+                        </td>
+                        {{! Conceptos del profesor }}
+                        <td>
+                            {{#top_concepts}}
+                            <div class="slm-tag slm-tag-concept mb-1">
+                                {{! <i class="fa fa-lightbulb fa-fw"></i> }}
+                                {{nombre}}
+                            </div>
+                            {{/top_concepts}}
+                            {{^top_concepts}}<span class="text-muted small">—</span>{{/top_concepts}}
+                        </td>
+                        {{! Recursos del profesor }}
+                        <td>
+                            {{#top_resources}}
+                            <div class="slm-tag slm-tag-resource mb-1">
+                                {{! <i class="fa fa-book fa-fw"></i> }}
+                                {{titulo}}
+                            </div>
+                            {{/top_resources}}
+                            {{^top_resources}}<span class="text-muted small">—</span>{{/top_resources}}
+                        </td>
+                        {{! Ejemplos IA }}
+                        <td>
+                            {{#top_examples}}
+                            <div class="slm-tag slm-tag-ia mb-1">
+                                {{! <i class="fa fa-robot fa-fw"></i> }}
+                                {{titulo}}
+                            </div>
+                            {{/top_examples}}
+                            {{^top_examples}}<span class="text-muted small">—</span>{{/top_examples}}
+                        </td>
+                        {{! Ver detalle }}
+                        <td class="text-center">
+                            <a href="{{detail_url}}" class="btn btn-sm btn-outline-primary">
+                                {{str_view_detail}} <i class="fa fa-arrow-right fa-fw"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/activities}}
+                </tbody>
+            </table>
+        </div>
+        {{/has_activities}}
+        {{^has_activities}}
+        <div class="alert alert-info mt-3">{{str_no_activities}}</div>
+        {{/has_activities}}
+        {{/show_activities}}
+
+        {{! DETALLE DE ACTIVIDAD VPL -> lista de estudiantes }}
+        {{#show_vpl_detail}}
+        {{! Breadcrumb }}
+        <nav class="mb-3">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item">
+                    <a href="{{back_url}}">{{str_back}}</a>
+                </li>
+                <li class="breadcrumb-item active">{{#vpl}}{{name}}{{/vpl}}</li>
+            </ol>
+        </nav>
+
+        {{#vpl}}
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i class="fa fa-code fa-fw text-secondary"></i>
+            <h5 class="mb-0 fw-semibold">{{name}}</h5>
+            <a href="{{url}}" target="_blank" class="btn btn-sm btn-outline-secondary ms-2">
+                <i class="fa fa-external-link fa-fw"></i>
+            </a>
+        </div>
+        {{/vpl}}
+
+        {{#has_students}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle slm-general-table">
+                <thead class="table-light">
+                    <tr>
+                        <th class="slm-col-activity">{{str_col_student}}</th>
+                        <th class="text-center slm-col-sm">{{str_col_requests}}</th>
+                        <th class="slm-col-sm">{{str_col_last}}</th>
+                        <th class="slm-col-md">{{str_col_errors}}</th>
+                        <th class="slm-col-md">{{str_col_concepts}}</th>
+                        <th class="slm-col-md">{{str_col_resources}}</th>
+                        <th class="slm-col-md">{{str_col_examples}}</th>
+                        <th class="text-center slm-col-sm">{{str_col_detail}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#students}}
+                    <tr>
+                        <td class="fw-semibold">
+                            <i class="fa fa-user-circle fa-fw text-secondary me-1"></i>{{fullname}}
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-primary rounded-pill">{{solicitud_count}}</span>
+                        </td>
+                        <td class="text-muted small">{{last_request}}</td>
+                        <td>
+                            {{#top_errors}}
+                            <div class="slm-tag slm-tag-error mb-1">
+                                {{! <i class="fa fa-bug fa-fw"></i> }}
+                                {{titulo}}
+                            </div>
+                            {{/top_errors}}
+                            {{^top_errors}}<span class="text-muted small">—</span>{{/top_errors}}
+                        </td>
+                        <td>
+                            {{#top_concepts}}
+                            <div class="slm-tag slm-tag-concept mb-1">
+                                {{! <i class="fa fa-lightbulb fa-fw"></i> }}
+                                {{nombre}}
+                            </div>
+                            {{/top_concepts}}
+                            {{^top_concepts}}<span class="text-muted small">—</span>{{/top_concepts}}
+                        </td>
+                        <td>
+                            {{#top_resources}}
+                            <div class="slm-tag slm-tag-resource mb-1">
+                                {{! <i class="fa fa-book fa-fw"></i> }}
+                                {{titulo}}
+                            </div>
+                            {{/top_resources}}
+                            {{^top_resources}}<span class="text-muted small">—</span>{{/top_resources}}
+                        </td>
+                        <td>
+                            {{#top_examples}}
+                            <div class="slm-tag slm-tag-ia mb-1">
+                                {{! <i class="fa fa-robot fa-fw"></i> }}
+                                {{titulo}}
+                            </div>
+                            {{/top_examples}}
+                            {{^top_examples}}<span class="text-muted small">—</span>{{/top_examples}}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{detail_url}}" class="btn btn-sm btn-outline-primary">
+                                {{str_view_detail}} <i class="fa fa-arrow-right fa-fw"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/students}}
+                </tbody>
+            </table>
+        </div>
+        {{/has_students}}
+        {{^has_students}}
+        <div class="alert alert-info">{{str_no_students}}</div>
+        {{/has_students}}
+        {{/show_vpl_detail}}
+
+        {{! SUBVISTA: DETALLE DE ESTUDIANTE -> historial de solicitudes }}
+        {{#show_student_detail}}
+
+        {{! Breadcrumb }}
+        <nav class="mb-3">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{back_url}}">{{str_back}}</a></li>
+                <li class="breadcrumb-item active">{{#student}}{{fullname}}{{/student}}</li>
+            </ol>
+        </nav>
+
+        {{! Cabecera con nombre del VPL, estudiante y botn de modo edición }}
+        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+            {{#vpl}}
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa fa-code fa-fw text-secondary"></i>
+                <span class="fw-semibold">{{name}}</span>
+            </div>
+            {{/vpl}}
+            <div class="vr"></div>
+            {{#student}}
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa fa-user-circle fa-fw text-secondary"></i>
+                <span class="fw-semibold">{{fullname}}</span>
+            </div>
+            {{/student}}
+            <div class="ms-auto">
+                <button type="button" id="slm-edit-mode-btn" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-pencil fa-fw"></i> Modo edición
+                </button>
+            </div>
+        </div>
+
+        {{! Historial de solicitudes }}
+        {{#has_history}}
+        <div class="d-flex flex-column gap-3">
+            {{#history}}
+            <div class="card border slm-history-card">
+                <div class="card-header bg-light py-2" style="cursor:pointer;"
+                     data-bs-toggle="collapse" data-bs-target="#slm-history-{{numero}}">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fa fa-chevron-down fa-fw small text-muted"></i>
+                        <span class="badge bg-secondary">Solicitud #{{numero}}</span>
+                        <span class="text-muted small">{{fecha}}</span>
+                    </div>
+                </div>
+                <div class="collapse show" id="slm-history-{{numero}}">
+                    <div class="card-body p-0">
+                        {{#has_errors}}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 slm-detail-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width:18%;">Título</th>
+                                        <th style="width:22%;">Descripción</th>
+                                        <th style="width:22%;">Recomendación</th>
+                                        <th style="width:24%;">Conceptos y recursos</th>
+                                        <th style="width:14%;">Ejemplos IA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#errors_enriched}}
+                                    <tr>
+                                        {{!  TÍTULO  }}
+                                        <td>
+                                            <div class="slm-fw" data-errorid="{{errorid}}" data-field="titulo">
+                                                <span class="slm-fv fw-semibold small">{{titulo}}</span>
+                                                <button type="button" class="slm-pencil-btn" style="display:none;" title="Editar título">
+                                                    <i class="fa fa-pencil" style="font-size:10px;color:#adb5bd;"></i>
+                                                </button>
+                                                <div class="slm-field-editor" style="display:none;width:100%;">
+                                                    <textarea class="form-control form-control-sm" rows="2" style="font-size:12px;background:#fffde7;border:1px solid #f9a825;"></textarea>
+                                                    <div style="display:flex;gap:4px;margin-top:4px;">
+                                                        <button type="button" class="slm-fsave btn btn-sm btn-primary" style="font-size:11px;padding:2px 8px;"><i class="fa fa-check fa-fw"></i> Guardar</button>
+                                                        <button type="button" class="slm-fcancel btn btn-sm btn-outline-secondary" style="font-size:11px;padding:2px 8px;">Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        {{!  DESCRIPCIoN  }}
+                                        <td>
+                                            <div class="slm-fw" data-errorid="{{errorid}}" data-field="descripcion_error">
+                                                <span class="slm-fv small text-muted">{{descripcion_error}}</span>
+                                                <button type="button" class="slm-pencil-btn" style="display:none;" title="Editar descripción">
+                                                    <i class="fa fa-pencil" style="font-size:10px;color:#adb5bd;"></i>
+                                                </button>
+                                                <div class="slm-field-editor" style="display:none;width:100%;">
+                                                    <textarea class="form-control form-control-sm" rows="3" style="font-size:12px;background:#fffde7;border:1px solid #f9a825;"></textarea>
+                                                    <div style="display:flex;gap:4px;margin-top:4px;">
+                                                        <button type="button" class="slm-fsave btn btn-sm btn-primary" style="font-size:11px;padding:2px 8px;"><i class="fa fa-check fa-fw"></i> Guardar</button>
+                                                        <button type="button" class="slm-fcancel btn btn-sm btn-outline-secondary" style="font-size:11px;padding:2px 8px;">Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        {{!  RECOMENDACION  }}
+                                        <td>
+                                            <div class="slm-fw" data-errorid="{{errorid}}" data-field="recomendacion">
+                                                <span class="slm-fv small">{{recomendacion}}</span>
+                                                <button type="button" class="slm-pencil-btn" style="display:none;" title="Editar recomendación">
+                                                    <i class="fa fa-pencil" style="font-size:10px;color:#adb5bd;"></i>
+                                                </button>
+                                                <div class="slm-field-editor" style="display:none;width:100%;">
+                                                    <textarea class="form-control form-control-sm" rows="3" style="font-size:12px;background:#fffde7;border:1px solid #f9a825;"></textarea>
+                                                    <div style="display:flex;gap:4px;margin-top:4px;">
+                                                        <button type="button" class="slm-fsave btn btn-sm btn-primary" style="font-size:11px;padding:2px 8px;"><i class="fa fa-check fa-fw"></i> Guardar</button>
+                                                        <button type="button" class="slm-fcancel btn btn-sm btn-outline-secondary" style="font-size:11px;padding:2px 8px;">Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        {{!  CONCEPTOS Y RECURSOS  }}
+                                        <td>
+                                            {{#has_concepts}}
+                                            {{#concepts}}
+                                            <div class="mb-2">
+                                                <span class="slm-tag slm-tag-concept">{{nombre}}</span>
+                                                {{#has_resources}}
+                                                <div class="slm-resource-list mt-1">
+                                                    {{#resources}}
+                                                    {{#has_url}}
+                                                    <a href="{{url}}" target="_blank" class="slm-resource-link d-block">
+                                                        <i class="fa fa-link fa-fw"></i>{{titulo}}
+                                                    </a>
+                                                    {{/has_url}}
+                                                    {{^has_url}}
+                                                    <span class="slm-resource-link d-block">
+                                                        <i class="fa fa-file fa-fw"></i>{{titulo}}
+                                                    </span>
+                                                    {{/has_url}}
+                                                    {{/resources}}
+                                                </div>
+                                                {{/has_resources}}
+                                            </div>
+                                            {{/concepts}}
+                                            {{/has_concepts}}
+                                            {{^has_concepts}}<span class="text-muted small">—</span>{{/has_concepts}}
+                                        </td>
+                                        {{!  EJEMPLOS IA  }}
+                                        <td>
+                                            {{#has_examples}}
+                                            {{#examples}}
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary slm-example-btn d-block mb-1 text-start w-100"
+                                                    data-ejemploid="{{ejemploid}}">
+                                                <i class="fa fa-robot fa-fw text-muted"></i>
+                                                <span class="small">{{titulo}}</span>
+                                            </button>
+                                            {{! Datos ocultos para el modal }}
+                                            <div class="d-none slm-example-data" data-ejemploid="{{ejemploid}}">
+                                                <div data-field="titulo">{{titulo}}</div>
+                                                <div data-field="descripcion">{{{descripcion_ejemplo}}}</div>
+                                                <div data-field="codigo">{{{codigo}}}</div>
+                                                <div data-field="explicacion">{{{explicacion}}}</div>
+                                                <div data-field="resultado">{{{resultado_esperado}}}</div>
+                                                <div data-field="has_codigo">{{has_codigo}}</div>
+                                                <div data-field="has_resultado">{{has_resultado}}</div>
+                                            </div>
+                                            {{/examples}}
+                                            {{/has_examples}}
+                                            {{^has_examples}}<span class="text-muted small">—</span>{{/has_examples}}
+                                        </td>
+                                    </tr>
+                                    {{/errors_enriched}}
+                                </tbody>
+                            </table>
+                        </div>
+                        {{/has_errors}}
+                        {{^has_errors}}<div class="p-3 text-muted small">Sin errores registrados.</div>{{/has_errors}}
+                    </div>
+                </div>
+            </div>
+            {{/history}}
+        </div>
+        {{/has_history}}
+        {{^has_history}}<div class="alert alert-info">{{str_no_history}}</div>{{/has_history}}
+
+        {{!  Modal de ejemplo IA  }}
+        <div class="modal fade" id="slm-example-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fa fa-robot fa-fw text-muted me-2"></i>
+                            <span id="slm-modal-titulo"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="slm-modal-body">
+                        {{! JS los reemplaza con textareas en modo edición }}
+                        <div class="mb-3">
+                            <div class="small fw-semibold text-muted mb-1">Descripción</div>
+                            <div id="slm-modal-descripcion" class="small text-muted"></div>
+                        </div>
+                        <div id="slm-modal-codigo-wrap" class="mb-3">
+                            <div class="small fw-semibold mb-1">Código de ejemplo</div>
+                            <pre class="slm-code-block"><code id="slm-modal-codigo"></code></pre>
+                        </div>
+                        <div class="mb-3">
+                            <div class="small fw-semibold mb-1">Explicación</div>
+                            <div id="slm-modal-explicacion" class="small"></div>
+                        </div>
+                        <div id="slm-modal-resultado-wrap" class="alert alert-light border">
+                            <div class="small fw-semibold mb-1">Resultado esperado</div>
+                            <div id="slm-modal-resultado" class="small"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="slm-modal-save-btn" class="btn btn-sm btn-primary" style="display:none;">
+                            <i class="fa fa-save fa-fw"></i> Guardar ejemplo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{/show_student_detail}}
+
+        {{! SUBVISTA: CONCEPTOS }}
+        {{#show_concepts}}
+        {{^has_temas}}
+        <div class="alert alert-warning d-flex gap-3 align-items-start mt-2">
+            <i class="fa fa-triangle-exclamation fa-lg mt-1"></i>
+            <div>
+                <strong>{{str_concepts_no_catalog}}</strong>
+                <p class="mb-1 mt-1">{{str_concepts_no_catalog_body}}</p>
+                <a href="{{url_catalog}}" class="btn btn-sm btn-outline-warning">{{str_concepts_go_catalog}}</a>
+            </div>
+        </div>
+        {{/has_temas}}
+        {{#has_temas}}
+        {{#temas}}
+        <div class="card mb-4">
+            <div class="card-header bg-light d-flex align-items-center gap-2 py-2">
+                <button type="button" class="btn btn-sm btn-link p-0 text-dark"
+                        data-bs-toggle="collapse" data-bs-target="#slm-tema-{{temaid}}">
+                    <i class="fa fa-chevron-down fa-fw"></i>
+                </button>
+                <strong>{{nombre}}</strong>
+                <span class="badge bg-secondary ms-auto">{{count}} concepto{{#count_plural}}s{{/count_plural}}</span>
+            </div>
+            <div class="collapse show" id="slm-tema-{{temaid}}">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle slm-general-table mb-0">
+                        <thead class="table-light" style="border-top: none;">
+                            <tr>
+                                <th style="width:20%;">{{str_col_concept}}</th>
+                                <th class="text-center" style="width:8%;">{{str_col_occurrences}}</th>
+                                <th style="width:30%;">{{str_col_errors}}</th>
+                                <th style="width:30%;">{{str_col_resources}}</th>
+                                <th class="text-center" style="width:12%;">{{str_col_detail}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#conceptos}}
+                            <tr>
+                                <td>
+                                    <span class="slm-tag slm-tag-concept">
+                                        {{! <i class="fa fa-lightbulb fa-fw"></i> }} {{nombre}}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {{#has_data}}<span class="badge bg-primary rounded-pill">{{occurrences}}</span>{{/has_data}}
+                                    {{^has_data}}<span class="text-muted small">0</span>{{/has_data}}
+                                </td>
+                                <td>
+                                    {{#has_errors}}
+                                    {{#top_errors}}
+                                    <div class="slm-tag slm-tag-error mb-1">
+                                        {{! <i class="fa fa-bug fa-fw"></i> }} {{titulo}}
+                                        <span class="ms-1 opacity-75" style="font-size:10px;">(×{{count}})</span>
+                                    </div>
+                                    {{/top_errors}}
+                                    {{/has_errors}}
+                                    {{^has_errors}}<span class="text-muted small">—</span>{{/has_errors}}
+                                </td>
+                                <td>
+                                    {{#has_resources}}
+                                    {{#resources}}
+                                    <div class="mb-1">
+                                        {{#url}}
+                                        <a href="{{url}}" target="_blank" class="slm-tag slm-tag-resource text-decoration-none">
+                                            {{! <i class="fa fa-book fa-fw"></i> }} {{titulo}}
+                                            <i class="fa fa-external-link fa-fw" style="font-size:9px;"></i>
+                                        </a>
+                                        {{/url}}
+                                        {{^url}}
+                                        <span class="slm-tag slm-tag-resource">
+                                            {{! <i class="fa fa-book fa-fw"></i> }} {{titulo}}
+                                        </span>
+                                        {{/url}}
+                                    </div>
+                                    {{/resources}}
+                                    {{/has_resources}}
+                                    {{^has_resources}}<span class="text-muted small">—</span>{{/has_resources}}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{detail_url}}" class="btn btn-sm btn-outline-primary">
+                                        {{str_view_detail}} <i class="fa fa-arrow-right fa-fw"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {{/conceptos}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{/temas}}
+        {{/has_temas}}
+        {{/show_concepts}}
+
+        {{! SUBVISTA: DETALLE DE CONCEPTO }}
+        {{#show_concept_detail}}
+        <nav class="mb-3">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{back_url}}">{{str_back}}</a></li>
+                {{#concepto}}
+                <li class="breadcrumb-item text-muted">{{tema}}</li>
+                <li class="breadcrumb-item active">{{nombre}}</li>
+                {{/concepto}}
+            </ol>
+        </nav>
+        {{#concepto}}
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="slm-tag slm-tag-concept" style="font-size:15px; padding: 6px 14px;">
+                {{! <i class="fa fa-lightbulb fa-fw"></i> }} {{nombre}}
+            </span>
+            <span class="text-muted small">{{str_tema_label}}: <strong>{{tema}}</strong></span>
+        </div>
+        {{/concepto}}
+        <div class="row g-4">
+            <div class="col-12 col-lg-8">
+                <h6 class="fw-semibold mb-3">
+                    {{! <i class="fa fa-bug fa-fw text-danger me-1"></i> }}{{str_errors_title}}
+                </h6>
+                {{#has_errors}}
+                <div class="d-flex flex-column gap-3">
+                    {{#errors}}
+                    <div class="card border slm-history-card">
+                        <div class="card-header py-2 d-flex align-items-center gap-3 flex-wrap">
+                            <span class="slm-tag slm-tag-error">
+                                {{! <i class="fa fa-bug fa-fw"></i> }} {{titulo}}
+                            </span>
+                            <div class="d-flex gap-2 ms-auto align-items-center flex-shrink-0">
+                                <span class="badge bg-secondary" style="font-size:11px;">×{{ocurrencias}} {{str_occurrences}}</span>
+                                <span class="badge bg-danger bg-opacity-75" style="font-size:11px;">{{severidad}}</span>
+                            </div>
+                        </div>
+                        <div class="card-body py-3">
+                            {{#descripcion}}
+                            <p class="small text-muted mb-2">{{descripcion}}</p>
+                            {{/descripcion}}
+                            {{#recomendacion}}
+                            <div class="alert alert-light border-start border-primary border-3 py-2 px-3 mb-2">
+                                <div class="small fw-semibold mb-1">{{str_recommendation}}</div>
+                                <div class="small">{{recomendacion}}</div>
+                            </div>
+                            {{/recomendacion}}
+                            {{#has_ejemplos}}
+                            <div class="mt-2">
+                                <div class="small fw-semibold text-muted mb-2">
+                                    {{! <i class="fa fa-robot fa-fw"></i> }} {{str_ia_examples}}
+                                </div>
+                                {{#ejemplos}}
+                                <div class="slm-example-block mb-2">
+                                    <div class="small fw-semibold">{{titulo}}</div>
+                                    {{#codigo}}<pre class="slm-code-block"><code>{{codigo}}</code></pre>{{/codigo}}
+                                </div>
+                                {{/ejemplos}}
+                            </div>
+                            {{/has_ejemplos}}
+                        </div>
+                    </div>
+                    {{/errors}}
+                </div>
+                {{/has_errors}}
+                {{^has_errors}}<div class="alert alert-info">{{str_no_errors}}</div>{{/has_errors}}
+            </div>
+            <div class="col-12 col-lg-4">
+                <h6 class="fw-semibold mb-3">
+                    {{! <i class="fa fa-book fa-fw text-success me-1"></i> }}{{str_resources_title}}
+                </h6>
+                {{#has_resources}}
+                <div class="d-flex flex-column gap-2">
+                    {{#resources}}
+                    <div class="card border p-2 d-flex flex-row align-items-center gap-2">
+                        {{! <i class="fa fa-book fa-fw text-success"></i> }}
+                        <div class="flex-grow-1" style="min-width:0;">
+                            <div class="small fw-semibold text-truncate">{{titulo}}</div>
+                            <div class="text-muted" style="font-size:11px;">{{tipo}}</div>
+                        </div>
+                        {{#url}}<a href="{{url}}" target="_blank" class="btn btn-sm btn-outline-success flex-shrink-0"><i class="fa fa-external-link fa-fw"></i></a>{{/url}}
+                    </div>
+                    {{/resources}}
+                </div>
+                {{/has_resources}}
+                {{^has_resources}}<div class="alert alert-light border">{{str_no_resources}}</div>{{/has_resources}}
+            </div>
+        </div>
+        {{/show_concept_detail}}
+
+    </div>
+</div>
+
+{{! Este Scripts JS toca colocar de manera correcta segun la estructura definida, por temas de tiempo se coloca de manera temporal }}
+
+<script>
+(function() {
+
+    // ----- Dropdown navegación -----------------------------------------------
+    document.querySelectorAll('.slm-report-wrapper .select-menu [role="option"]').forEach(function(item) {
+        item.addEventListener('click', function() {
+            var url = this.getAttribute('data-value');
+            if (url) { window.location.href = url; }
+        });
+    });
+
+    // --- Variables -----------------------------------------------
+    var editActive  = false;
+    var currentEjId = null;
+    var courseId    = parseInt(new URLSearchParams(window.location.search).get('courseid') || '0', 10);
+
+    // --- AJAX -----------------------------------------------
+    function saveViaAjax(tipo, id, campos, onDone) {
+        console.log('slm save:', tipo, id, campos, 'courseid:', courseId);
+        require(['core/ajax'], function(Ajax) {
+            Ajax.call([{
+                methodname: 'local_smart_learning_mentor_save_teacher_edit',
+                args: { tipo: tipo, id: id, courseid: courseId, campos: campos },
+            }])[0].then(function(res) {
+                console.log('slm save response:', res);
+                if (onDone) { onDone(res.success); }
+            }).catch(function(err) {
+                console.error('slm save_teacher_edit ERROR:', err);
+                if (onDone) { onDone(false); }
+            });
+        });
+    }
+
+    // -- Modo edicin-- mostrar/ocultar lapices -----------------------------------------------
+    var editBtn = document.getElementById('slm-edit-mode-btn');
+    if (editBtn) {
+        editBtn.addEventListener('click', function() {
+            editActive = !editActive;
+            editBtn.classList.toggle('btn-outline-secondary', !editActive);
+            editBtn.classList.toggle('btn-warning', editActive);
+            editBtn.innerHTML = editActive
+                ? '<i class="fa fa-times fa-fw"></i> Salir de edición'
+                : '<i class="fa fa-pencil fa-fw"></i> Modo edición';
+
+            // Mostrar u ocultar TODOS los lápices de la tabla.
+            document.querySelectorAll('.slm-pencil-btn').forEach(function(btn) {
+                btn.style.display = editActive ? 'inline-block' : 'none';
+            });
+
+            // Si salimos de edición, cerrar cualquier editor abierto sin guardar.
+            if (!editActive) {
+                document.querySelectorAll('.slm-field-editor').forEach(function(ed) {
+                    if (ed.style.display !== 'none') {
+                        var fw  = ed.closest('.slm-fw');
+                        var fv  = fw ? fw.querySelector('.slm-fv') : null;
+                        if (fv)  { fv.style.display  = ''; }
+                        ed.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // ----- Lapiz: abrir editor de campo -----------------------------------------------
+        document.addEventListener('click', function(e) {
+            var pencil = e.target.closest('.slm-pencil-btn');
+            if (!pencil || !editActive) { return; }
+            var fw     = pencil.closest('.slm-fw');
+            var fv     = fw.querySelector('.slm-fv');
+            var editor = fw.querySelector('.slm-field-editor');
+            var ta     = editor.querySelector('textarea');
+
+            // Cargar valor actual en el textarea.
+            ta.value = fv ? fv.textContent.trim() : '';
+
+            // Mostrar editor, ocultar texto y lápiz.
+            fv.style.display     = 'none';
+            pencil.style.display = 'none';
+            editor.style.display = 'block';
+            ta.focus();
+        });
+
+        // ----- Guardar campo -----------------------------------------------
+        document.addEventListener('click', function(e) {
+            var saveBtn = e.target.closest('.slm-fsave');
+            if (!saveBtn) { return; }
+            var editor  = saveBtn.closest('.slm-field-editor');
+            var fw      = editor.closest('.slm-fw');
+            var fv      = fw.querySelector('.slm-fv');
+            var ta      = editor.querySelector('textarea');
+            var errorid = parseInt(fw.dataset.errorid, 10);
+            var field   = fw.dataset.field;
+            var newval  = ta.value.trim();
+            var campos  = {};
+            campos[field] = newval;
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
+
+            saveViaAjax('error', errorid, campos, function(ok) {
+                saveBtn.disabled = false;
+                if (ok) {
+                    if (fv) { fv.textContent = newval; }
+                    // Restaurar: ocultar editor, mostrar texto y lápiz.
+                    editor.style.display = 'none';
+                    fv.style.display     = '';
+                    var pencil = fw.querySelector('.slm-pencil-btn');
+                    if (pencil) { pencil.style.display = editActive ? 'inline-block' : 'none'; }
+                    saveBtn.innerHTML = '<i class="fa fa-check fa-fw"></i> Guardar';
+                } else {
+                    saveBtn.innerHTML = '<i class="fa fa-save fa-fw"></i> Reintentar';
+                }
+            });
+        });
+
+        // ----- Cancelar campo -----------------------------------------------
+        document.addEventListener('click', function(e) {
+            var cancelBtn = e.target.closest('.slm-fcancel');
+            if (!cancelBtn) { return; }
+            var editor = cancelBtn.closest('.slm-field-editor');
+            var fw     = editor.closest('.slm-fw');
+            var fv     = fw.querySelector('.slm-fv');
+            var pencil = fw.querySelector('.slm-pencil-btn');
+            editor.style.display = 'none';
+            fv.style.display     = '';
+            if (pencil) { pencil.style.display = editActive ? 'inline-block' : 'none'; }
+        });
+    }
+
+    // ----- Modal de ejemplo IA -----------------------------------------------
+    document.querySelectorAll('.slm-example-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            currentEjId = this.getAttribute('data-ejemploid');
+            openExampleModal(currentEjId);
+        });
+    });
+
+    function openExampleModal(ejId) {
+        console.log('slm openModal ejId:', ejId);
+        var data = document.querySelector('.slm-example-data[data-ejemploid="' + ejId + '"]');
+        console.log('slm example-data found:', data);
+        if (!data) { console.error('slm: no se encontró .slm-example-data para ejId=' + ejId); return; }
+
+        var getText = function(f) {
+            var el = data.querySelector('[data-field="' + f + '"]');
+            return el ? el.textContent.trim() : '';
+        };
+
+        // Rellenar campos del modal.
+        var setField = function(id, val) { var el = document.getElementById(id); if (el) { el.textContent = val; } };
+        setField('slm-modal-titulo',      getText('titulo'));
+        setField('slm-modal-descripcion', getText('descripcion'));
+        setField('slm-modal-codigo',      getText('codigo'));
+        setField('slm-modal-explicacion', getText('explicacion'));
+        setField('slm-modal-resultado',   getText('resultado'));
+
+        var hasCod = getText('has_codigo')    === '1';
+        var hasRes = getText('has_resultado') === '1';
+        var codWrap = document.getElementById('slm-modal-codigo-wrap');
+        var resWrap = document.getElementById('slm-modal-resultado-wrap');
+        if (codWrap) { codWrap.style.display = hasCod ? '' : 'none'; }
+        if (resWrap) { resWrap.style.display = hasRes ? '' : 'none'; }
+
+        // Modo edición en el modal: convertir divs en textareas.
+        var saveBtn = document.getElementById('slm-modal-save-btn');
+        if (editActive) {
+            convertModalToEdit();
+            if (saveBtn) { saveBtn.style.display = ''; }
+        } else {
+            restoreModalFromEdit();
+            if (saveBtn) { saveBtn.style.display = 'none'; }
+        }
+
+        // Abrir modal via AMD (en Moodle, bootstrap no es global).
+        var modalEl = document.getElementById('slm-example-modal');
+        if (modalEl) {
+            require(['theme_boost/bootstrap/modal'], function(Modal) {
+                Modal.getOrCreateInstance(modalEl).show();
+            });
+        }
+    }
+
+    // Mapa campo display -> textarea para el modal.
+    var MODAL_FIELDS = [
+        { display: 'slm-modal-titulo',      taId: 'slm-ta-titulo' },
+        { display: 'slm-modal-descripcion', taId: 'slm-ta-descripcion' },
+        { display: 'slm-modal-codigo',      taId: 'slm-ta-codigo',      mono: true },
+        { display: 'slm-modal-explicacion', taId: 'slm-ta-explicacion' },
+        { display: 'slm-modal-resultado',   taId: 'slm-ta-resultado' },
+    ];
+
+    function convertModalToEdit() {
+        MODAL_FIELDS.forEach(function(f) {
+            var dispEl = document.getElementById(f.display);
+            if (!dispEl) { return; }
+            // Si ya hay un textarea, solo actualizar valor.
+            var existing = document.getElementById(f.taId);
+            if (existing) { existing.style.display = ''; dispEl.style.display = 'none'; return; }
+            // Crear textarea.
+            var ta = document.createElement('textarea');
+            ta.id    = f.taId;
+            ta.className = 'form-control form-control-sm mb-1';
+            ta.rows  = 3;
+            ta.value = dispEl.textContent.trim();
+            if (f.mono) { ta.style.fontFamily = 'monospace'; ta.rows = 5; }
+            ta.style.background  = '#fffde7';
+            ta.style.borderColor = '#f9a825';
+            dispEl.parentNode.insertBefore(ta, dispEl.nextSibling);
+            dispEl.style.display = 'none';
+        });
+    }
+
+    function restoreModalFromEdit() {
+        MODAL_FIELDS.forEach(function(f) {
+            var dispEl = document.getElementById(f.display);
+            var ta     = document.getElementById(f.taId);
+            if (dispEl) { dispEl.style.display = ''; }
+            if (ta)     { ta.style.display = 'none'; }
+        });
+    }
+
+    // ----- Guardar ejemplo desde modal -----------------------------------------------
+    var modalSaveBtn = document.getElementById('slm-modal-save-btn');
+    if (modalSaveBtn) {
+        modalSaveBtn.addEventListener('click', function() {
+            if (!currentEjId) { return; }
+            var getTA = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+            var campos = {
+                titulo:      getTA('slm-ta-titulo'),
+                descripcion: getTA('slm-ta-descripcion'),
+                codigo:      getTA('slm-ta-codigo'),
+                explicacion: getTA('slm-ta-explicacion'),
+                resultado:   getTA('slm-ta-resultado'),
+            };
+
+            modalSaveBtn.disabled = true;
+            modalSaveBtn.innerHTML = '<i class="fa fa-spinner fa-spin fa-fw"></i> Guardando...';
+
+            saveViaAjax('ejemplo', parseInt(currentEjId, 10), campos, function(ok) {
+                modalSaveBtn.disabled = false;
+                if (ok) {
+                    // Actualizar datos ocultos y botón en la tabla.
+                    var dataEl = document.querySelector('.slm-example-data[data-ejemploid="' + currentEjId + '"]');
+                    if (dataEl) {
+                        var fmap = {titulo:'titulo', descripcion:'descripcion',
+                                    codigo:'codigo', explicacion:'explicacion', resultado:'resultado'};
+                        Object.keys(fmap).forEach(function(f) {
+                            var orig = dataEl.querySelector('[data-field="' + fmap[f] + '"]');
+                            if (orig && campos[f] !== undefined) { orig.textContent = campos[f]; }
+                        });
+                        var listBtn = document.querySelector('.slm-example-btn[data-ejemploid="' + currentEjId + '"] .small');
+                        if (listBtn && campos.titulo) { listBtn.textContent = campos.titulo; }
+                    }
+                    // Actualizar displays del modal.
+                    MODAL_FIELDS.forEach(function(f) {
+                        var dispEl = document.getElementById(f.display);
+                        var ta     = document.getElementById(f.taId);
+                        if (dispEl && ta) { dispEl.textContent = ta.value; }
+                    });
+                    modalSaveBtn.innerHTML = '<i class="fa fa-check fa-fw"></i> Guardado';
+                    setTimeout(function() {
+                        modalSaveBtn.innerHTML = '<i class="fa fa-save fa-fw"></i> Guardar ejemplo';
+                    }, 2000);
+                } else {
+                    modalSaveBtn.innerHTML = '<i class="fa fa-times fa-fw"></i> Error — reintentar';
+                    setTimeout(function() {
+                        modalSaveBtn.innerHTML = '<i class="fa fa-save fa-fw"></i> Guardar ejemplo';
+                    }, 2000);
+                }
+            });
+        });
+    }
+
+})();
+</script>
+

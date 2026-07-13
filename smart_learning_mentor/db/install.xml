@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="correct-xmldb-format.xslt"?>
+<XMLDB PATH="local/smart_learning_mentor/db" VERSION="2026062705"
+       COMMENT="Smart Learning Mentor - todas las tablas del plugin"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd">
+
+  <TABLES>
+
+    <!-- ========================= CONFIGURACION GENERAL ========================= -->
+    <TABLE NAME="local_slm_configuracion" COMMENT="Configuración del plugin por curso y VPL">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="vplid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+
+        <FIELD NAME="habilitar_ayuda" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="habilitar_temas_conceptos" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="habilitar_recursos" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="habilitar_ejemplos" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+
+        <FIELD NAME="min_envios" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="max_solicitudes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="3" SEQUENCE="false"/>
+
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="config-course-uk" TYPE="unique" FIELDS="courseid,vplid"/>
+        <KEY NAME="config-course-fk" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="config-vpl-fk" TYPE="foreign" FIELDS="vplid" REFTABLE="vpl" REFFIELDS="id"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="config-course-idx" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="config-vpl-idx" UNIQUE="false" FIELDS="vplid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= TEMAS INGRESADOS POR EL PROFESOR ========================= -->
+    <TABLE NAME="local_slm_temas" COMMENT="Temas definidos por el profesor">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="nombre" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="descripcion" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="tema-course-fk" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="tema-name-uk" TYPE="unique" FIELDS="courseid,nombre"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="tema-course-idx" UNIQUE="false" FIELDS="courseid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= CONCEPTOS INGRESADOS POR EL PROFESOR ========================= -->
+    <TABLE NAME="local_slm_conceptos" COMMENT="Conceptos asociados a cada tema del catálogo pedagógico">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="temaid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="nombre" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="descripcion" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10"  NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10"  NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="concepto-tema-fk" TYPE="foreign" FIELDS="temaid" REFTABLE="local_slm_temas" REFFIELDS="id"/>
+        <KEY NAME="concepto-name-uk" TYPE="unique" FIELDS="temaid,nombre"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="concepto-tema-idx" UNIQUE="false" FIELDS="temaid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= SOLICITUD DE AYUDA ========================= -->
+    <TABLE NAME="local_slm_solicitud_ayuda" COMMENT="Solicitud de análisis IA generada por el estudiante en una actividad VPL">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="configuracionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="0 si el VPL no tiene conf " SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="vplid" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="prompt" TYPE="text" NOTNULL="false" COMMENT="Prompt enviado a la IA (despues)" SEQUENCE="false"/>
+        <FIELD NAME="json" TYPE="text" NOTNULL="false" COMMENT="JSON completo enviado a la IA" SEQUENCE="false"/>
+        <FIELD NAME="fecha_peticion"  TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="solicitud-config-fk" TYPE="foreign" FIELDS="configuracionid" REFTABLE="local_slm_configuracion" REFFIELDS="id"/>
+        <KEY NAME="solicitud-course-fk" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="solicitud-cm-fk" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id"/>
+        <KEY NAME="solicitud-vpl-fk" TYPE="foreign" FIELDS="vplid" REFTABLE="vpl" REFFIELDS="id"/>
+        <KEY NAME="solicitud-user-fk" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="solicitud-config-idx" UNIQUE="false" FIELDS="configuracionid"/>
+        <INDEX NAME="solicitud-user-idx"   UNIQUE="false" FIELDS="userid"/>
+        <INDEX NAME="solicitud-course-idx" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="solicitud-vpl-idx"    UNIQUE="false" FIELDS="vplid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= RESPUESTA DE LA IA ========================= -->
+    <TABLE NAME="local_slm_respuesta_ia" COMMENT="Respuesta de la IA asociada a una solicitud de ayuda">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="solicitudid" TYPE="int" LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="respuesta_json" TYPE="text" NOTNULL="false" COMMENT="JSON completo devuelto por la IA (antes respuesta_cruda)" SEQUENCE="false"/>
+        <FIELD NAME="student_message" TYPE="text" NOTNULL="false" COMMENT="Mensaje general de la IA para mostrar al estudiante" SEQUENCE="false"/>
+        <FIELD NAME="fecha_respuesta" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="respuesta-solicitud-fk" TYPE="foreign" FIELDS="solicitudid" REFTABLE="local_slm_solicitud_ayuda" REFFIELDS="id"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="respuesta-solicitud-idx" UNIQUE="false" FIELDS="solicitudid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= ERROR DETECTADO =========================
+         Cada error viene dentro de la respuesta de la IA.
+         Contiene los valores ACTUALES (pueden ser editados por el profesor).
+         Si el profesor edito algo, los valores originales de la IA quedan en local_slm_error_edicion.
+         El flag editado_por_profesor permite filtrar rápido en reportes.
+    ================================================================ -->
+    <TABLE NAME="local_slm_error_detectado" COMMENT="Errores detectados por la IA. Contiene los valores actuales (editables por el profesor).">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="respuestaid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="titulo" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Nombre corto del error" SEQUENCE="false"/>
+        <FIELD NAME="descripcion_error" TYPE="text" NOTNULL="false" COMMENT="Descripcion del error" SEQUENCE="false"/>
+
+        <FIELD NAME="recomendacion" TYPE="text" NOTNULL="false" COMMENT="Recomendacion para corregir el error" SEQUENCE="false"/>
+        <FIELD NAME="severidad" TYPE="char" LENGTH="20"  NOTNULL="false" COMMENT="high | medium | low." SEQUENCE="false"/>
+        <FIELD NAME="porcentaje" TYPE="number" LENGTH="5" DECIMALS="2" NOTNULL="false" DEFAULT="0" COMMENT="Frecuencia relativa del error.." SEQUENCE="false"/>
+        <FIELD NAME="ocurrencias" TYPE="int" LENGTH="10"  NOTNULL="false" DEFAULT="0" COMMENT="Numero de veces detectado el error" SEQUENCE="false"/>
+        <FIELD NAME="parte_codigo" TYPE="text" NOTNULL="false" COMMENT="Fragmento de codigo donde se detecto el error" SEQUENCE="false"/>
+        <FIELD NAME="otro_campo" TYPE="text" NOTNULL="false" COMMENT="Campo para guardar informacion adicional" SEQUENCE="false"/>
+        <FIELD NAME="editado_por_profesor" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="1 si el profesor modificu algun campo de este error" SEQUENCE="false"/>
+        
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Se actualiza cada vez que el profesor edita este error" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="error-respuesta-fk" TYPE="foreign" FIELDS="respuestaid" REFTABLE="local_slm_respuesta_ia" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="error-respuesta-idx"  UNIQUE="false" FIELDS="respuestaid"/>
+        <INDEX NAME="error-editado-idx"    UNIQUE="false" FIELDS="editado_por_profesor"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= EDICIONES DEL PROFESOR SOBRE UN ERROR =========================
+         Solo existe una fila aquí si el profesor editó ese error, guarda solo los campos que el profesor cambió.
+         Los campos que NO cambió quedan en NULL. Permite al profesor comparar "lo que puso la IA" vs "lo que tengo ahora".
+    ================================================================ -->
+    <TABLE NAME="local_slm_error_edicion" COMMENT="Valores originales de la IA para los campos que el profesor editó en un error.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int"    LENGTH="10"  NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="errorid" TYPE="int"    LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="titulo" TYPE="char"   LENGTH="255" NOTNULL="false" COMMENT="Valor original de la IA. NULL si el profesor no cambio este campo" SEQUENCE="false"/>
+        <FIELD NAME="descripcion_error"  TYPE="text" NOTNULL="false" COMMENT="Valor original de la IA. NULL si el profesor no cambio este campo" SEQUENCE="false"/>
+        <FIELD NAME="recomendacion" TYPE="text" NOTNULL="false" COMMENT="Valor original de la IA. NULL si el profesor no cambio este campo" SEQUENCE="false"/>
+        <FIELD NAME="severidad" TYPE="char"   LENGTH="20"  NOTNULL="false" COMMENT="Valor original de la IA. NULL si el profesor no cambio este campo." SEQUENCE="false"/>
+        <FIELD NAME="porcentaje"   TYPE="number" LENGTH="5"   DECIMALS="2" NOTNULL="false" COMMENT="Valor original de la IA. NULL si el profesor no cambió este campo" SEQUENCE="false"/>
+        <FIELD NAME="otro_campo" TYPE="text" NOTNULL="false" COMMENT="Campo para guardar informacion adicional" SEQUENCE="false"/>
+        
+        <FIELD NAME="editado_por"  TYPE="int"    LENGTH="10"  NOTNULL="true"  DEFAULT="0" COMMENT="userid del profesor que realizo la edicion." SEQUENCE="false"/>
+        <FIELD NAME="timecreated"  TYPE="int"    LENGTH="10"  NOTNULL="true"  DEFAULT="0" COMMENT="Fecha en que el profesor realizo la edicion." SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="edicion-error-fk" TYPE="foreign" FIELDS="errorid" REFTABLE="local_slm_error_detectado" REFFIELDS="id"/>
+        <KEY NAME="edicion-user-fk"  TYPE="foreign" FIELDS="editado_por" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="edicion-error-uk" TYPE="unique"  FIELDS="errorid" COMMENT="Un solo registro de edición por error. Si edita de nuevo, se actualiza este mismo registro."/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="edicion-error-idx" UNIQUE="false" FIELDS="errorid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= RELACIÓN ERROR-CONCEPTO
+         La IA propone la relacion inicial (origen = 'ia').
+         El profesor puede aceptarla, rechazarla o agregar la suya (origen = 'profesor').
+    ========================= -->
+    <TABLE NAME="local_slm_error_concepto" COMMENT="Relación entre un error detectado y un concepto del catálogo del profesor">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int"  LENGTH="10" NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="errorid" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="conceptoid" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="origen" TYPE="char" LENGTH="20" NOTNULL="true"  DEFAULT="ia" COMMENT="ia: propuesto por la IA | profesor: agregado o validado manualmente" SEQUENCE="false"/>
+        <FIELD NAME="aceptado" TYPE="int"  LENGTH="1"  NOTNULL="true"  DEFAULT="1" COMMENT="1 = activo/aceptado | 0 = rechazado por el profesor" SEQUENCE="false"/>
+        <FIELD NAME="timecreated"  TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="errcon-error-fk" TYPE="foreign" FIELDS="errorid"    REFTABLE="local_slm_error_detectado" REFFIELDS="id"/>
+        <KEY NAME="errcon-concept-fk" TYPE="foreign" FIELDS="conceptoid" REFTABLE="local_slm_conceptos" REFFIELDS="id"/>
+        <KEY NAME="errcon-uk" TYPE="unique"  FIELDS="errorid,conceptoid,origen"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="errcon-error-idx"    UNIQUE="false" FIELDS="errorid"/>
+        <INDEX NAME="errcon-concepto-idx" UNIQUE="false" FIELDS="conceptoid"/>
+        <INDEX NAME="errcon-origen-idx"   UNIQUE="false" FIELDS="origen"/>
+        <INDEX NAME="errcon-aceptado-idx" UNIQUE="false" FIELDS="aceptado"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= CONCEPTOS PROPUESTOS POR LA IA
+         Cuando la IA no puede relacionar el error con ningún concepto del catálogo del profesor, propone sus propios conceptos
+         marcados como "IA: nombre_concepto".
+         El profesor puede agregarr a los conceptos que tiene si lo desea. conceptoid_promovido mantiene el vínculo aunque el nombre cambie.
+    ================================================================ -->
+    <TABLE NAME="local_slm_ia_concepto" COMMENT="Conceptos propuestos por la IA que no están en el catálogo del profesor">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int"  LENGTH="10"  NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="errorid" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="nombre" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Nombre del concepto tal como lo propuso la IA." SEQUENCE="false"/>
+        <FIELD NAME="descripcion" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="promovido" TYPE="int"  LENGTH="1"   NOTNULL="true"  DEFAULT="0" COMMENT="1 si el profesor ya lo agregó al catálogo (local_slm_conceptos)" SEQUENCE="false"/>
+        <FIELD NAME="conceptoid_promovido" TYPE="int"  LENGTH="10"  NOTNULL="false" COMMENT="ID del concepto en local_slm_conceptos si fue promovido" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="iaconc-error-fk" TYPE="foreign" FIELDS="errorid" REFTABLE="local_slm_error_detectado" REFFIELDS="id"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="iaconc-error-idx"     UNIQUE="false" FIELDS="errorid"/>
+        <INDEX NAME="iaconc-promovido-idx" UNIQUE="false" FIELDS="promovido"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= RECURSOS PROPUESTOS POR LA IA
+         Recursos sugeridos por la IA para ayudar con cada error.
+         El profesor puede aceptar y agregar a los recursos (local_slm_recurso).
+    ================================================================ -->
+    <TABLE NAME="local_slm_ia_recurso" COMMENT="Recursos propuestos por la IA para un error detectado">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int"  LENGTH="10"  NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="errorid" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="titulo" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Titulo del recurso tal como lo propuso la IA" SEQUENCE="false"/>
+        <FIELD NAME="tipo" TYPE="char" LENGTH="50"  NOTNULL="false" COMMENT="Tipo de recurso: enlace, video, ejercicio, libro, etc." SEQUENCE="false"/>
+        <FIELD NAME="url" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="descripcion" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="promovido" TYPE="int"  LENGTH="1"   NOTNULL="true"  DEFAULT="0" COMMENT="1 si el profesor ya lo agregó a (local_slm_recurso)." SEQUENCE="false"/>
+        <FIELD NAME="recursoid_promovido" TYPE="int"  LENGTH="10"  NOTNULL="false" COMMENT="ID del recurso en local_slm_recurso si fue agregado" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="iarec-error-fk" TYPE="foreign" FIELDS="errorid" REFTABLE="local_slm_error_detectado" REFFIELDS="id"/>
+      </KEYS>
+
+      <INDEXES>
+        <INDEX NAME="iarec-error-idx"     UNIQUE="false" FIELDS="errorid"/>
+        <INDEX NAME="iarec-promovido-idx" UNIQUE="false" FIELDS="promovido"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= EJEMPLOS GENERADOS POR LA IA ========================= -->
+    <TABLE NAME="local_slm_ia_ejemplo" COMMENT="Ejemplos de código generados por la IA para un error detectado">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int"  LENGTH="10"  NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="errorid" TYPE="int" LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="titulo" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="descripcion_ejemplo" TYPE="text" NOTNULL="false" COMMENT="Indica que debe realizar el estudiante" SEQUENCE="false"/>
+        <FIELD NAME="codigo" TYPE="text" NOTNULL="false" COMMENT="Código de ejemplo para ilustrar el error" SEQUENCE="false"/>
+        <FIELD NAME="explicacion" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="resultado_esperado" TYPE="text" NOTNULL="false" COMMENT="Resultado esperado del ejemplo" SEQUENCE="false"/>
+        <FIELD NAME="editado_por_profesor" TYPE="int"  LENGTH="1"   NOTNULL="true"  DEFAULT="0" COMMENT="1 si el profesor modifico. El original en" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="iaej-error-fk" TYPE="foreign" FIELDS="errorid" REFTABLE="local_slm_error_detectado" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="iaej-error-idx"   UNIQUE="false" FIELDS="errorid"/>
+        <INDEX NAME="iaej-editado-idx" UNIQUE="false" FIELDS="editado_por_profesor"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- ========================= RECURSOS
+         Recursos que el profesor agrega y asocia a conceptos de su catálogo.
+         Pueden venir de tres fuentes (implementacion futura):
+           - curso: archivos del propio curso Moodle (pag, doc...) - OBLIGATORIA - ACTUAL
+           - externo: URL externa que el profesor agrega manualmente
+           - ia: recurso dado desde local_slm_ia_recurso
+    ================================================================ -->
+    <TABLE NAME="local_slm_recurso" COMMENT="Recursos del catálogo del profesor, asociados a conceptos">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int"  LENGTH="10"  NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="titulo" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="tipo" TYPE="char" LENGTH="20"  NOTNULL="true"  DEFAULT="externo" COMMENT="curso: propio curso | externo | ia: daso desde ia_recurso" SEQUENCE="false"/>
+        <FIELD NAME="cmid" TYPE="int"  LENGTH="10"  NOTNULL="false" COMMENT="ID del recurso del curso si tipo=curso." SEQUENCE="false"/>
+        <FIELD NAME="url" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="descripcion"  TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timecreated"  TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="recurso-course-fk" TYPE="foreign" FIELDS="courseid"  REFTABLE="course" REFFIELDS="id"/>
+        <!-- <KEY NAME="recurso-cmid-uk" TYPE="unique"  FIELDS="courseid,titulo"/> -->
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="recurso-course-idx" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="recurso-tipo-idx" UNIQUE="false" FIELDS="tipo"/>
+      </INDEXES>
+    </TABLE>
+
+<!-- ========================= concepto-recursos============== -->
+
+    <TABLE NAME="local_slm_recurso_concepto" COMMENT="Tabla entre recursos y conceptos">
+      <FIELDS>
+          <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+          <FIELD NAME="recursoid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+          <FIELD NAME="conceptoid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+          <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+          <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+          <KEY NAME="rc-recurso-fk" TYPE="foreign" FIELDS="recursoid" REFTABLE="local_slm_recurso" REFFIELDS="id"/>
+          <KEY NAME="rc-concepto-fk" TYPE="foreign" FIELDS="conceptoid" REFTABLE="local_slm_conceptos" REFFIELDS="id"/>
+          <KEY NAME="rc-uk" TYPE="unique" FIELDS="recursoid,conceptoid"/>
+      </KEYS>
+  </TABLE>
+
+  </TABLES>
+</XMLDB>

@@ -1,0 +1,456 @@
+{{!
+    Dashboard del estudiante
+    Subvistas: Conceptos - Actividades - Historial
+
+}}
+<div class="slm-report-wrapper">
+
+    {{! ----- Pestaniaas: Conceptos | Actividades -- }}
+    <ul class="nav nav-tabs mb-0" role="tablist">
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_concepts}}active{{/active_concepts}}" href="{{url_concepts}}">
+                Conceptos
+            </a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_activities}}active{{/active_activities}}" href="{{url_activities}}">
+                Actividades
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-3 bg-white">
+
+        {{! - SUBVISTA: CONCEPTOS  - }}
+        {{#show_concepts}}
+        {{^has_temas}}
+        <div class="alert alert-info mt-2">{{str_no_concepts}}</div>
+        {{/has_temas}}
+        {{#has_temas}}
+        {{#temas}}
+        <div class="card mb-4">
+            <div class="card-header bg-light d-flex align-items-center gap-2 py-2">
+                <button type="button" class="btn btn-sm btn-link p-0 text-dark"
+                        data-bs-toggle="collapse" data-bs-target="#slm-tema-{{temaid}}">
+                    <i class="fa fa-chevron-down fa-fw"></i>
+                </button>
+                <strong>{{nombre}}</strong>
+                <span class="badge bg-secondary ms-auto">{{count}} concepto{{#count_plural}}s{{/count_plural}}</span>
+            </div>
+            <div class="collapse show" id="slm-tema-{{temaid}}">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle slm-general-table mb-0">
+                        <thead class="table-light" style="border-top:none;">
+                            <tr>
+                                <th style="width:20%;">Concepto</th>
+                                <th class="text-center" style="width:8%;">Detectado</th>
+                                <th style="width:30%;">Errores asociados</th>
+                                <th style="width:28%;">Recursos del profesor</th>
+                                <th class="text-center" style="width:14%;">Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#conceptos}}
+                            <tr>
+                                <td><span class="slm-tag slm-tag-concept">{{nombre}}</span></td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary rounded-pill">{{ocurrencias}}×</span>
+                                </td>
+                                <td>
+                                    {{#has_errors}}{{#top_errors}}<div class="slm-tag slm-tag-error mb-1">{{titulo}}</div>{{/top_errors}}{{/has_errors}}
+                                    {{^has_errors}}<span class="text-muted small">—</span>{{/has_errors}}
+                                </td>
+                                <td>
+                                    {{#has_resources}}
+                                    {{#resources}}
+                                    <div class="mb-1">
+                                        {{#has_url}}<a href="{{url}}" target="_blank" class="slm-tag slm-tag-resource text-decoration-none">{{titulo}} <i class="fa fa-external-link fa-fw" style="font-size:9px;"></i></a>{{/has_url}}
+                                        {{^has_url}}<span class="slm-tag slm-tag-resource">{{titulo}}</span>{{/has_url}}
+                                    </div>
+                                    {{/resources}}
+                                    {{/has_resources}}
+                                    {{^has_resources}}<span class="text-muted small">—</span>{{/has_resources}}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{detail_url}}" class="btn btn-sm btn-outline-primary">
+                                        Ver detalle <i class="fa fa-arrow-right fa-fw"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {{/conceptos}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{/temas}}
+        {{/has_temas}}
+        {{/show_concepts}}
+
+        {{! - SUBVISTA: ACTIVIDADES  -- }}
+
+        {{#show_activities}}
+        {{^has_activities}}
+        <div class="alert alert-info mt-2">{{str_no_activities}}</div>
+        {{/has_activities}}
+        {{#has_activities}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle slm-general-table">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:28%;">{{str_col_activity}}</th>
+                        <th class="text-center" style="width:10%;">{{str_col_requests}}</th>
+                        <th style="width:18%;">{{str_col_last}}</th>
+                        <th style="width:32%;">{{str_col_errors}}</th>
+                        <th class="text-center" style="width:12%;">{{str_col_detail}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#activities}}
+                    <tr>
+                        <td class="fw-semibold">
+                            <i class="fa fa-code fa-fw text-secondary me-1"></i>{{name}}
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-primary rounded-pill">{{solicitud_count}}</span>
+                        </td>
+                        <td class="text-muted small">{{last_request}}</td>
+                        <td>
+                            {{#has_errors}}{{#top_errors}}<div class="slm-tag slm-tag-error mb-1">{{titulo}}</div>{{/top_errors}}{{/has_errors}}
+                            {{^has_errors}}<span class="text-muted small">—</span>{{/has_errors}}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{detail_url}}" class="btn btn-sm btn-outline-primary">
+                                {{str_view_detail}} <i class="fa fa-arrow-right fa-fw"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/activities}}
+                </tbody>
+            </table>
+        </div>
+        {{/has_activities}}
+        {{/show_activities}}
+
+        {{! - SUBVISTA: historial  -- }}
+
+        {{#show_history}}
+
+        {{! Breadcrumb }}
+        <nav class="mb-3">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{back_url}}">{{str_back}}</a></li>
+                <li class="breadcrumb-item active">{{vplname}}</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i class="fa fa-code fa-fw text-secondary"></i>
+            <h5 class="mb-0 fw-semibold">{{vplname}}</h5>
+        </div>
+
+
+        {{#has_history}}
+        <div class="d-flex flex-column gap-3">
+            {{#history}}
+            <div class="card border slm-history-card">
+                <div class="card-header bg-light py-2" style="cursor:pointer;"
+                     data-bs-toggle="collapse" data-bs-target="#slm-h-{{numero}}">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fa fa-chevron-down fa-fw small text-muted"></i>
+                        <span class="badge bg-secondary">Solicitud #{{numero}}</span>
+                        <span class="text-muted small">{{fecha}}</span>
+                        {{#student_message}}
+                        <span class="text-muted small fst-italic ms-2">— {{student_message}}</span>
+                        {{/student_message}}
+                    </div>
+                </div>
+                <div class="collapse show" id="slm-h-{{numero}}">
+                    <div class="card-body p-0">
+                        {{#has_errors}}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 slm-detail-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width:18%;">Título</th>
+                                        <th style="width:22%;">Descripción</th>
+                                        <th style="width:22%;">Recomendación</th>
+                                        <th style="width:24%;">Conceptos y recursos</th>
+                                        <th style="width:14%;">Ejemplos IA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#errors_enriched}}
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold small">{{titulo}}</div>
+                                        </td>
+                                        <td><div class="small text-muted">{{descripcion_error}}</div></td>
+                                        <td><div class="small">{{recomendacion}}</div></td>
+                                        <td>
+                                            {{#has_concepts}}
+                                            {{#concepts}}
+                                            <div class="mb-2">
+                                                <span class="slm-tag slm-tag-concept">{{nombre}}</span>
+                                                {{#has_resources}}
+                                                <div class="slm-resource-list mt-1">
+                                                    {{#resources}}
+                                                    {{#has_url}}<a href="{{url}}" target="_blank" class="slm-resource-link d-block"><i class="fa fa-link fa-fw"></i>{{titulo}}</a>{{/has_url}}
+                                                    {{^has_url}}<span class="slm-resource-link d-block"><i class="fa fa-file fa-fw"></i>{{titulo}}</span>{{/has_url}}
+                                                    {{/resources}}
+                                                </div>
+                                                {{/has_resources}}
+                                            </div>
+                                            {{/concepts}}
+                                            {{/has_concepts}}
+                                            {{^has_concepts}}<span class="text-muted small">—</span>{{/has_concepts}}
+                                        </td>
+                                        <td>
+                                            {{#has_examples}}
+                                            {{#examples}}
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary slm-example-btn d-block mb-1 text-start w-100"
+                                                    data-ejemploid="{{ejemploid}}">
+                                                <i class="fa fa-robot fa-fw text-muted"></i>
+                                                <span class="small">{{titulo}}</span>
+                                            </button>
+                                            <div class="d-none slm-example-data" data-ejemploid="{{ejemploid}}">
+                                                <div data-field="titulo">{{titulo}}</div>
+                                                <div data-field="descripcion">{{{descripcion_ejemplo}}}</div>
+                                                <div data-field="codigo">{{{codigo}}}</div>
+                                                <div data-field="explicacion">{{{explicacion}}}</div>
+                                                <div data-field="resultado">{{{resultado_esperado}}}</div>
+                                                <div data-field="has_codigo">{{has_codigo}}</div>
+                                                <div data-field="has_resultado">{{has_resultado}}</div>
+                                            </div>
+                                            {{/examples}}
+                                            {{/has_examples}}
+                                            {{^has_examples}}<span class="text-muted small">—</span>{{/has_examples}}
+                                        </td>
+                                    </tr>
+                                    {{/errors_enriched}}
+                                </tbody>
+                            </table>
+                        </div>
+                        {{/has_errors}}
+                        {{^has_errors}}<div class="p-3 text-muted small">Sin errores registrados.</div>{{/has_errors}}
+                    </div>
+                </div>
+            </div>
+            {{/history}}
+        </div>
+        {{/has_history}}
+        {{^has_history}}<div class="alert alert-info">{{str_no_history}}</div>{{/has_history}}
+
+        {{!Modal de ejemplo IA }}
+        <div class="modal fade" id="slm-example-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fa fa-robot fa-fw text-muted me-2"></i>
+                            <span id="slm-modal-titulo"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <div class="small fw-semibold text-muted mb-1">Descripción</div>
+                            <div id="slm-modal-descripcion" class="small text-muted"></div>
+                        </div>
+                        <div id="slm-modal-codigo-wrap" class="mb-3">
+                            <div class="small fw-semibold mb-1">Código de ejemplo</div>
+                            <pre class="slm-code-block"><code id="slm-modal-codigo"></code></pre>
+                        </div>
+                        <div class="mb-3">
+                            <div class="small fw-semibold mb-1">Explicación</div>
+                            <div id="slm-modal-explicacion" class="small"></div>
+                        </div>
+                        <div id="slm-modal-resultado-wrap" class="alert alert-light border">
+                            <div class="small fw-semibold mb-1">Resultado esperado</div>
+                            <div id="slm-modal-resultado" class="small"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{/show_history}}
+
+        {{! -- SUBVISTA: detalle de concepto  -- }}
+
+        {{#show_concept_detail}}
+        <nav class="mb-3">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{back_url_concept}}">Conceptos</a></li>
+                {{#concepto}}
+                <li class="breadcrumb-item text-muted">{{tema}}</li>
+                <li class="breadcrumb-item active">{{nombre}}</li>
+                {{/concepto}}
+            </ol>
+        </nav>
+        {{#concepto}}
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="slm-tag slm-tag-concept" style="font-size:15px;padding:6px 14px;">{{nombre}}</span>
+            <span class="text-muted small">Tema: <strong>{{tema}}</strong></span>
+        </div>
+        {{/concepto}}
+        <div class="row g-4">
+            {{! errr del estudiante para este concepto }}
+            <div class="col-12 col-lg-8">
+                <h6 class="fw-semibold mb-3">
+                    <i class="fa fa-bug fa-fw text-danger me-1"></i> Errores detectados en tus entregas
+                </h6>
+                {{#has_errors}}
+                <div class="d-flex flex-column gap-3">
+                    {{#errors}}
+                    <div class="card border slm-history-card">
+                        <div class="card-header py-2 d-flex align-items-center gap-3 flex-wrap">
+                            <span class="slm-tag slm-tag-error">{{titulo}}</span>
+                            <div class="d-flex gap-2 ms-auto align-items-center flex-shrink-0">
+                                <span class="badge bg-secondary" style="font-size:11px;">×{{ocurrencias}} veces</span>
+                            </div>
+                        </div>
+                        <div class="card-body py-3">
+                            {{#descripcion}}<p class="small text-muted mb-2">{{descripcion}}</p>{{/descripcion}}
+                            {{#recomendacion}}
+                            <div class="alert alert-light border-start border-primary border-3 py-2 px-3 mb-3">
+                                <div class="small fw-semibold mb-1">{{str_recommendation}}</div>
+                                <div class="small">{{recomendacion}}</div>
+                            </div>
+                            {{/recomendacion}}
+                            {{#has_ejemplos}}
+                            <div class="mt-2">
+                                <div class="small fw-semibold text-muted mb-2">
+                                    <i class="fa fa-robot fa-fw"></i> {{str_ia_examples}}
+                                </div>
+                                {{#ejemplos}}
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary slm-example-btn d-block mb-1 text-start w-100"
+                                        data-ejemploid="{{ejemploid}}">
+                                    <i class="fa fa-robot fa-fw text-muted"></i>
+                                    <span class="small">{{titulo}}</span>
+                                </button>
+                                <div class="d-none slm-example-data" data-ejemploid="{{ejemploid}}">
+                                    <div data-field="titulo">{{titulo}}</div>
+                                    <div data-field="descripcion">{{{descripcion_ejemplo}}}</div>
+                                    <div data-field="codigo">{{{codigo}}}</div>
+                                    <div data-field="explicacion">{{{explicacion}}}</div>
+                                    <div data-field="resultado">{{{resultado_esperado}}}</div>
+                                    <div data-field="has_codigo">{{has_codigo}}</div>
+                                    <div data-field="has_resultado">{{has_resultado}}</div>
+                                </div>
+                                {{/ejemplos}}
+                            </div>
+                            {{/has_ejemplos}}
+                        </div>
+                    </div>
+                    {{/errors}}
+                </div>
+                {{/has_errors}}
+                {{^has_errors}}<div class="alert alert-info">No hay errores registrados para este concepto.</div>{{/has_errors}}
+            </div>
+            {{! recursos del profesor }}
+            <div class="col-12 col-lg-4">
+                <h6 class="fw-semibold mb-3">
+                    <i class="fa fa-book fa-fw text-success me-1"></i> Recursos del profesor
+                </h6>
+                {{#has_resources}}
+                <div class="d-flex flex-column gap-2">
+                    {{#resources}}
+                    <div class="card border p-2 d-flex flex-row align-items-center gap-2">
+                        <div class="flex-grow-1" style="min-width:0;">
+                            <div class="small fw-semibold text-truncate">{{titulo}}</div>
+                        </div>
+                        {{#has_url}}<a href="{{url}}" target="_blank" class="btn btn-sm btn-outline-success flex-shrink-0"><i class="fa fa-external-link fa-fw"></i></a>{{/has_url}}
+                    </div>
+                    {{/resources}}
+                </div>
+                {{/has_resources}}
+                {{^has_resources}}<div class="alert alert-light border">No hay recursos asociados a este concepto.</div>{{/has_resources}}
+            </div>
+        </div>
+
+        {{! Modal ejemplos IA}}
+        {{^show_history}}
+        <div class="modal fade" id="slm-example-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fa fa-robot fa-fw text-muted me-2"></i>
+                            <span id="slm-modal-titulo"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <div class="small fw-semibold text-muted mb-1">Descripción</div>
+                            <div id="slm-modal-descripcion" class="small text-muted"></div>
+                        </div>
+                        <div id="slm-modal-codigo-wrap" class="mb-3">
+                            <div class="small fw-semibold mb-1">Código de ejemplo</div>
+                            <pre class="slm-code-block"><code id="slm-modal-codigo"></code></pre>
+                        </div>
+                        <div class="mb-3">
+                            <div class="small fw-semibold mb-1">Explicación</div>
+                            <div id="slm-modal-explicacion" class="small"></div>
+                        </div>
+                        <div id="slm-modal-resultado-wrap" class="alert alert-light border">
+                            <div class="small fw-semibold mb-1">Resultado esperado</div>
+                            <div id="slm-modal-resultado" class="small"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/show_history}}
+
+        {{/show_concept_detail}}
+
+    </div>
+</div>
+
+{{! NOTA: seguir la estructura de archivos, script temporal }}
+
+<script>
+(function() {
+    // Modal de ejemplos IA
+    document.querySelectorAll('.slm-example-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var ejId = this.getAttribute('data-ejemploid');
+            var data = document.querySelector('.slm-example-data[data-ejemploid="' + ejId + '"]');
+            if (!data) { return; }
+
+            var getText = function(f) {
+                var el = data.querySelector('[data-field="' + f + '"]');
+                return el ? el.textContent.trim() : '';
+            };
+
+            document.getElementById('slm-modal-titulo').textContent      = getText('titulo');
+            document.getElementById('slm-modal-descripcion').textContent = getText('descripcion');
+            document.getElementById('slm-modal-codigo').textContent      = getText('codigo');
+            document.getElementById('slm-modal-explicacion').textContent = getText('explicacion');
+            document.getElementById('slm-modal-resultado').textContent   = getText('resultado');
+
+            var codWrap = document.getElementById('slm-modal-codigo-wrap');
+            var resWrap = document.getElementById('slm-modal-resultado-wrap');
+            if (codWrap) { codWrap.style.display = getText('has_codigo')    === '1' ? '' : 'none'; }
+            if (resWrap) { resWrap.style.display = getText('has_resultado') === '1' ? '' : 'none'; }
+
+            var modalEl = document.getElementById('slm-example-modal');
+            if (modalEl) {
+                require(['theme_boost/bootstrap/modal'], function(Modal) {
+                    Modal.getOrCreateInstance(modalEl).show();
+                });
+            }
+        });
+    });
+})();
+</script>

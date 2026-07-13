@@ -1,0 +1,562 @@
+{{!
+Vista Catalogo del profesor: Temas y Conceptos | Recursos.
+}}
+<div class="slm-report-wrapper">
+
+    {{! pestanias principales }}
+    <ul class="nav nav-tabs mb-0" role="tablist">
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_general}}active{{/active_general}}" href="{{nav_general_url}}"
+                role="tab">{{str_nav_general}}</a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_catalog}}active{{/active_catalog}}" href="{{nav_catalog_url}}"
+                role="tab">{{str_nav_catalog}}</a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_config}}active{{/active_config}}" href="{{nav_config_url}}"
+                role="tab">{{str_nav_config}}</a>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-3 bg-white">
+
+        {{! bu-selector }}
+        <div class="d-flex mb-3">
+            <div class="navitem">
+                <nav class="tertiary-navigation-selector">
+                    <div class="dropdown select-menu">
+                        <div class="btn btn-outline-secondary dropdown-toggle" role="combobox" data-bs-toggle="dropdown"
+                            aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+                            {{subview_label}}
+                        </div>
+                        <ul class="dropdown-menu" role="listbox">
+                            <li role="none">
+                                <ul role="group" class="list-unstyled mb-0">
+                                    <li class="dropdown-item {{#subview_topics_active}}active{{/subview_topics_active}}"
+                                        role="option" data-value="{{url_topics}}" style="cursor:pointer;">
+                                        {{str_subview_topics}}
+                                    </li>
+                                    <li class="dropdown-item {{#subview_resources_active}}active{{/subview_resources_active}}"
+                                        role="option" data-value="{{url_resources}}" style="cursor:pointer;">
+                                        {{str_subview_resources}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        {{! SUBVISTA: TEMAS Y CONCEPTOS }}
+        {{#show_topics}}
+
+        <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2" id="slm-topics-root"
+            data-courseid="{{courseid}}" data-topics="{{{topics_json}}}">
+            <div>
+                <h5 class="mb-1">{{str_topics_title}}</h5>
+                <p class="text-muted small mb-0">{{str_topics_subtitle}}</p>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-check-label mb-0 small fw-semibold" for="slm-editmode-switch">
+                        {{str_topics_edit_mode}}
+                    </label>
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" role="switch" id="slm-editmode-switch">
+                    </div>
+                </div>
+                <div class="border-start" style="height:24px;"></div>
+                <button type="button" class="btn btn-primary btn-sm" id="slm-add-theme-btn">
+                    + {{str_topics_add_theme}}
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-3" id="slm-topics-layout">
+            <div id="slm-topics-col" class="col-12">
+                <div id="slm-themes-container">
+                    {{#has_topics}}
+                    {{#topics}}
+                    <div class="card mb-3 slm-theme-card" data-themeid="{{id}}" data-theme-name="{{name}}">
+                        <div class="card-header bg-white d-flex align-items-center gap-2 py-2">
+                            <button type="button" class="btn btn-link btn-sm p-0 slm-theme-toggle text-dark"
+                                data-bs-toggle="collapse" data-bs-target="#slm-theme-body-{{id}}">
+                                <i class="fa fa-chevron-down fa-fw slm-chevron"></i>
+                            </button>
+                            <div class="flex-grow-1">
+                                <strong class="slm-theme-name-display">{{name}}</strong>
+                                <span class="badge bg-secondary ms-2 slm-concept-count-badge">{{concept_count}}</span>
+                            </div>
+                            <div class="slm-theme-actions d-none d-flex gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-secondary slm-edit-theme-btn"
+                                    title="{{str_topics_theme_edit}}">
+                                    <i class="fa fa-pen fa-fw"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger slm-delete-theme-btn"
+                                    title="{{str_topics_theme_delete}}">
+                                    <i class="fa fa-trash fa-fw"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="slm-theme-body-{{id}}">
+                            <div class="card-body py-2">
+                                <div class="slm-theme-editor d-none mb-3 p-3 bg-light rounded">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col">
+                                            <label class="form-label small">{{str_topics_theme_name_label}}</label>
+                                            <input type="text" class="form-control form-control-sm slm-theme-name-input"
+                                                value="{{name}}" placeholder="{{str_topics_theme_name_placeholder}}">
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="button"
+                                                class="btn btn-sm btn-success slm-save-theme-name-btn">{{str_topics_save_theme}}</button>
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-secondary slm-cancel-theme-edit-btn">{{str_topics_cancel}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slm-concepts-list d-flex flex-wrap gap-2 mb-2">
+                                    {{#concepts}}
+                                    <span
+                                        class="badge bg-info slm-concept-chip d-inline-flex align-items-center gap-1"
+                                        data-conceptid="{{id}}" style="font-size:13px; padding:6px 10px;">
+                                        {{nombre}}
+                                        <button type="button"
+                                            class="btn-close btn-close-white slm-delete-concept-btn d-none"
+                                            style="font-size:10px;" aria-label="{{str_topics_concept_delete}}">
+                                        </button>
+                                    </span>
+                                    {{/concepts}}
+                                    {{^concepts}}
+                                    <span class="text-muted small slm-no-concepts">Sin conceptos aun.</span>
+                                    {{/concepts}}
+                                </div>
+                                <div class="slm-add-concept-form d-none mt-2">
+                                    <div class="input-group input-group-sm" style="max-width:400px;">
+                                        <input type="text" class="form-control slm-new-concept-input"
+                                            placeholder="{{str_topics_concept_placeholder}}">
+                                        <button type="button" class="btn btn-primary slm-save-concept-btn">
+                                            {{str_topics_save_concept}}
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button"
+                                    class="btn btn-link btn-sm p-0 mt-1 slm-show-add-concept d-none text-primary">
+                                    + {{str_topics_add_concept}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {{/topics}}
+                    {{/has_topics}}
+                    {{^has_topics}}
+                    <div class="alert alert-info" id="slm-no-topics-msg">{{str_topics_no_topics}}</div>
+                    {{/has_topics}}
+                </div>
+            </div>
+
+            <div id="slm-ai-panel" class="d-none">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning bg-opacity-10 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{str_topics_ai_panel_title}}</strong>
+                            {{#has_ai_concepts}}<span
+                                class="badge bg-warning text-dark ms-2">{{ai_concept_count}}</span>{{/has_ai_concepts}}
+                            <div class="text-muted small">{{str_topics_ai_panel_sub}}</div>
+                        </div>
+                        <button type="button" class="btn-close" id="slm-ai-panel-close"></button>
+                    </div>
+                    <div class="card-body p-2" style="max-height:60vh; overflow-y:auto;">
+                        {{#has_ai_concepts}}
+                        <div class="d-flex flex-column gap-2">
+                            {{#ai_concepts}}
+                            <div class="d-flex align-items-center justify-content-between p-2 border rounded bg-white slm-ai-concept-item"
+                                data-ai-nombre="{{nombre}}" data-ai-ids="{{ids}}">
+                                <div>
+                                    <span class="fw-semibold small">{{nombre}}</span>
+                                    <span class="badge bg-secondary ms-1" style="font-size:10px;">x{{count}}</span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-primary slm-ai-add-btn"
+                                    title="{{str_topics_ai_add_btn}}">
+                                    <i class="fa fa-plus fa-fw"></i>
+                                </button>
+                            </div>
+                            {{/ai_concepts}}
+                        </div>
+                        {{/has_ai_concepts}}
+                        {{^has_ai_concepts}}
+                        <p class="text-muted small p-2 mb-0">{{str_topics_ai_empty}}</p>
+                        {{/has_ai_concepts}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{#has_ai_concepts}}
+        <button type="button" class="btn btn-warning btn-sm position-fixed slm-ai-panel-toggle" id="slm-ai-panel-toggle"
+            style="bottom:80px; right:20px; z-index:1040; box-shadow:0 2px 8px rgba(0,0,0,.2);">
+            <i class="fa fa-lightbulb fa-fw"></i> IA
+            <span class="badge bg-dark ms-1">{{ai_concept_count}}</span>
+        </button>
+        {{/has_ai_concepts}}
+
+        <div class="modal fade" id="slm-ai-promote-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{str_topics_modal_title}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">{{str_topics_modal_concept_label}}</label>
+                            <input type="text" class="form-control" id="slm-modal-concept-name"
+                                placeholder="{{str_topics_modal_concept_placeholder}}">
+                            <input type="hidden" id="slm-modal-ai-ids" value="">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{str_topics_modal_theme_label}}</label>
+                            <select class="form-select" id="slm-modal-theme-select">
+                                <option value="">{{str_topics_modal_select_theme}}</option>
+                                {{#topics}}
+                                <option value="{{id}}">{{name}}</option>
+                                {{/topics}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">{{str_topics_modal_cancel}}</button>
+                        <button type="button" class="btn btn-primary"
+                            id="slm-modal-promote-btn">{{str_topics_modal_save}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="slm-new-theme-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">+ {{str_topics_add_theme}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{! nombre del tema }}
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">{{str_topics_theme_name_label}} <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="slm-new-theme-name"
+                                placeholder="{{str_topics_theme_name_placeholder}}">
+                            <div class="invalid-feedback d-block d-none" id="slm-new-theme-name-error"></div>
+                        </div>
+                        {{! al menos uno obligatorio }}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                {{str_topics_add_concept}} <span class="text-danger">*</span>
+                            </label>
+                            <div class="text-muted small mb-2">{{str_topics_modal_concepts_hint}}</div>
+                            {{! Lista de conceptos pendientes }}
+                            <div id="slm-new-theme-concepts-list"
+                                class="d-flex flex-wrap gap-2 mb-3 p-2 border rounded bg-light"
+                                style="min-height:42px;">
+                                <span
+                                    class="text-muted small slm-no-concepts-hint">{{str_topics_modal_concepts_empty}}</span>
+                            </div>
+                            {{! Input para agregar concepto }}
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="slm-new-theme-concept-input"
+                                    placeholder="{{str_topics_concept_placeholder}}">
+                                <button type="button" class="btn btn-outline-primary"
+                                    id="slm-new-theme-add-concept-btn">
+                                    + {{str_topics_save_concept}}
+                                </button>
+                            </div>
+                            <div class="invalid-feedback d-block d-none" id="slm-new-theme-concepts-error"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">{{str_topics_cancel}}</button>
+                        <button type="button" class="btn btn-primary"
+                            id="slm-new-theme-save-btn">{{str_topics_save_theme}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{/show_topics}}
+
+        {{! SUBVISTA: RECURSOS }}
+        {{#show_resources}}
+
+        {{! Aviso si no hay conceptos }}
+        {{^has_concepts}}
+        <div class="alert alert-warning d-flex align-items-start gap-3 mt-3">
+            <i class="fa fa-triangle-exclamation fa-fw fa-lg mt-1 text-warning"></i>
+            <div>
+                <strong>{{str_resources_no_concepts_title}}</strong>
+                <p class="mb-1 mt-1">{{str_resources_no_concepts_body}}</p>
+                <a href="{{url_topics}}" class="btn btn-sm btn-outline-warning">
+                    {{str_resources_go_to_topics}}
+                </a>
+            </div>
+        </div>
+        {{/has_concepts}}
+
+        {{! Contenido principal }}
+        {{#has_concepts}}
+        <div class="slm-resources-layout mt-3" id="slm-resources-root" data-courseid="{{courseid}}">
+
+            {{! Sidebar }}
+            <div class="slm-resources-sidebar" id="slm-resources-sidebar">
+                <div class="slm-sidebar-header d-flex align-items-center p-2 border-bottom">
+                    <button class="btn btn-sm btn-icon me-2" type="button" id="slm-resources-sidebar-toggle"
+                        title="{{str_resources_toggle_sidebar}}">
+                        <i class="fa fa-bars fa-fw"></i>
+                    </button>
+                    <div>
+                        <strong class="small">{{str_resources_sidebar_title}}</strong>
+                        <div class="text-muted" style="font-size:11px;">{{str_resources_sidebar_sub}}</div>
+                    </div>
+                </div>
+                <div class="slm-sidebar-body p-2">
+                    {{#topics}}
+                    <div class="mb-2">
+                        <div class="fw-semibold small text-uppercase text-muted mb-1 px-1">{{name}}</div>
+                        {{#concepts}}
+                        <div class="px-2 py-1 small text-truncate">
+                            <i class="fa fa-circle fa-fw" style="font-size:6px; color:#6c757d;"></i>
+                            {{name}}
+                        </div>
+                        {{/concepts}}
+                        {{^concepts}}
+                        <div class="px-2 small text-muted">Sin conceptos</div>
+                        {{/concepts}}
+                    </div>
+                    {{/topics}}
+                    {{^topics}}
+                    <p class="text-muted small p-2">No hay temas.</p>
+                    {{/topics}}
+                </div>
+            </div>
+
+            {{! Area principal de recursos }}
+            <div class="slm-resources-main">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="mb-0">{{str_resources_main_title}}</h6>
+                        <div class="text-muted small">{{str_resources_main_sub}}</div>
+                    </div>
+                    <span class="badge bg-secondary">{{total_modules}} {{str_resources_elements}}</span>
+                </div>
+
+                {{^has_modules}}
+                <div class="alert alert-info">{{str_resources_no_modules}}</div>
+                {{/has_modules}}
+
+                {{#course_modules}}
+                <div class="card mb-3">
+
+                    {{! Cabecera de seccion principal }}
+                    <div class="card-header bg-light d-flex align-items-center gap-2 py-2">
+                        <button type="button" class="btn btn-sm btn-link p-0 text-dark" data-bs-toggle="collapse"
+                            data-bs-target="#slm-section-{{sectionid}}">
+                            <i class="fa fa-chevron-down fa-fw"></i>
+                        </button>
+                        <strong>{{sectionname}}</strong>
+                        <span class="badge bg-secondary ms-auto">{{item_count}}</span>
+                    </div>
+
+                    <div class="collapse show" id="slm-section-{{sectionid}}">
+
+                        {{! Items directos de la seccion}}
+                        {{#has_direct}}
+                        <ul class="list-group list-group-flush">
+                            {{#direct_items}}
+                            <li class="list-group-item slm-resource-row px-3 py-2" data-cmid="{{cmid}}">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="slm-resource-icon mt-1 text-muted">{{{icon}}}</div>
+                                    <div class="flex-grow-1" style="min-width:0;">
+                                        <div class="fw-semibold text-truncate">{{titulo}}</div>
+                                        <div class="text-muted small">{{typelabel}}</div>
+                                        <div class="slm-resource-concepts d-flex flex-wrap gap-1 mt-1">
+                                            {{#associated_concepts}}<span
+                                                class="slm-resource-concept-chip">{{nombre}}</span>{{/associated_concepts}}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                        {{#concept_count}}<span
+                                            class="badge bg-info slm-resource-count-badge">{{concept_count}}
+                                            concepto{{#concept_count_plural}}s{{/concept_count_plural}}</span>{{/concept_count}}
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-primary slm-assign-resource-btn"
+                                            data-resource-id="{{id}}" data-cmid="{{cmid}}" data-courseid="{{courseid}}"
+                                            data-resource-title="{{titulo}}" data-resource-type="{{typelabel}}"
+                                            data-associated-conceptids="{{conceptids_csv}}">
+                                            {{str_resources_associate_btn}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/direct_items}}
+                        </ul>
+                        {{/has_direct}}
+
+                        {{! Subsecciones }}
+                        {{#has_subsections}}
+                        {{#subsections}}
+                        <div class="border-top">
+                            {{! cabecera de subseccion }}
+                            <div class="px-3 py-2 bg-white d-flex align-items-center gap-2"
+                                style="border-left: 3px solid #6c757d;">
+                                <button type="button" class="btn btn-sm btn-link p-0 text-dark"
+                                    data-bs-toggle="collapse" data-bs-target="#slm-subsection-{{subsectionid}}">
+                                    <i class="fa fa-chevron-down fa-fw"></i>
+                                </button>
+                                <span class="fw-semibold">{{subsectionname}}</span>
+                                <span class="badge bg-light text-dark ms-auto border">{{item_count}}</span>
+                            </div>
+                            {{! Items de la subseccion }}
+                            <div class="collapse show" id="slm-subsection-{{subsectionid}}">
+                                {{#has_items}}
+                                <ul class="list-group list-group-flush ps-3">
+                                    {{#items}}
+                                    <li class="list-group-item slm-resource-row px-3 py-2" data-cmid="{{cmid}}">
+                                        <div class="d-flex align-items-start gap-3">
+                                            <div class="slm-resource-icon mt-1 text-muted">{{{icon}}}</div>
+                                            <div class="flex-grow-1" style="min-width:0;">
+                                                <div class="fw-semibold text-truncate">{{titulo}}</div>
+                                                <div class="text-muted small">{{typelabel}}</div>
+                                                <div class="slm-resource-concepts d-flex flex-wrap gap-1 mt-1">
+                                                    {{#associated_concepts}}<span
+                                                        class="slm-resource-concept-chip">{{nombre}}</span>{{/associated_concepts}}
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                                {{#concept_count}}<span
+                                                    class="badge bg-info slm-resource-count-badge">{{concept_count}}
+                                                    concepto{{#concept_count_plural}}s{{/concept_count_plural}}</span>{{/concept_count}}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-primary slm-assign-resource-btn"
+                                                    data-resource-id="{{id}}" data-cmid="{{cmid}}"
+                                                    data-courseid="{{courseid}}" data-resource-title="{{titulo}}"
+                                                    data-resource-type="{{typelabel}}"
+                                                    data-associated-conceptids="{{conceptids_csv}}">
+                                                    {{str_resources_associate_btn}}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {{/items}}
+                                </ul>
+                                {{/has_items}}
+                            </div>
+                        </div>
+                        {{/subsections}}
+                        {{/has_subsections}}
+
+                    </div>
+                </div>
+                {{/course_modules}}
+            </div>
+        </div>
+
+        {{! Modal de asocia }}
+        <div class="modal fade" id="slm-association-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div>
+                            <h5 class="modal-title mb-1">{{str_resources_modal_title}}</h5>
+                            <div class="text-muted small">{{str_resources_modal_subtitle}}</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-light border mb-3">
+                            <div class="fw-semibold small text-muted mb-1">{{str_resources_selected_resource}}</div>
+                            <div>
+                                <strong id="slm-modal-resource-title">---</strong>
+                                <span class="text-muted small ms-2" id="slm-modal-resource-type"></span>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12 col-lg-8">
+                                <div class="card h-100">
+                                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                        <strong>{{str_resources_modal_concepts}}</strong>
+                                        <input type="text" class="form-control form-control-sm" id="slm-concept-search"
+                                            placeholder="{{str_resources_modal_search}}" style="max-width:200px;">
+                                    </div>
+                                    <div class="card-body" style="max-height:340px; overflow-y:auto;">
+                                        {{#topics}}
+                                        <div class="mb-3 slm-modal-topic-group">
+                                            <div class="fw-semibold small text-muted text-uppercase mb-2">{{name}}</div>
+                                            <div class="d-flex flex-column gap-2">
+                                                {{#concepts}}
+                                                <label
+                                                    class="slm-concept-pill d-inline-flex align-items-center gap-1 border rounded px-2 py-1"
+                                                    style="cursor:pointer;">
+                                                    <input type="checkbox"
+                                                        class="form-check-input m-0 slm-concept-checkbox" value="{{id}}"
+                                                        data-concept-name="{{name}}">
+                                                    <span class="small">{{name}}</span>
+                                                </label>
+                                                {{/concepts}}
+                                                {{^concepts}}
+                                                <span class="text-muted small">Sin conceptos en este tema.</span>
+                                                {{/concepts}}
+                                            </div>
+                                        </div>
+                                        {{/topics}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-white">
+                                        <strong>{{str_resources_modal_summary}}</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="text-muted small mb-2">{{str_resources_modal_selected}}</div>
+                                        <div id="slm-selected-concepts" class="d-flex flex-wrap gap-2">
+                                            <span class="text-muted small">{{str_resources_modal_none}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                            data-bs-dismiss="modal">
+                                            {{str_resources_modal_cancel}}
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            id="slm-associate-save-btn">
+                                            {{str_resources_modal_save}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{/has_concepts}}
+        {{/show_resources}}
+
+    </div>
+</div>
+
+<script>
+    (function () {
+        document.querySelectorAll('.slm-report-wrapper .select-menu [role="option"]').forEach(function (item) {
+            item.addEventListener('click', function () {
+                var url = this.getAttribute('data-value');
+                if (url) { window.location.href = url; }
+            });
+        });
+    })();
+</script>

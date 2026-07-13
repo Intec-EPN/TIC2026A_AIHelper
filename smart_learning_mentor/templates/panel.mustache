@@ -1,0 +1,137 @@
+{{!
+    Panel flotante del estudiante - Smart Learning Mentor.
+
+}}
+
+{{!  BOToN FLOTANTE PARA ABRIR EL PANEL  }}
+<div id="slm-tab-button" aria-label="{{str_panel_title}}" role="button" tabindex="0">
+    <img class="slm-tab-icon" src="{{icon_mentor}}" alt="{{str_panel_title}}">
+</div>
+
+{{!  PANEL PRINCIPAL  }}
+<div id="slm-panel" class="slm-panel" role="complementary" aria-label="{{str_panel_title}}">
+
+    {{!  CABECERA DEL PANEL  }}
+    <div class="slm-panel-header">
+        <div class="slm-panel-header-info">
+            <h3 class="slm-panel-title">{{str_panel_title}}</h3>
+            <p class="slm-panel-subtitle">{{str_panel_subtitle}}</p>
+        </div>
+        <button id="slm-panel-close" class="slm-btn-close" aria-label="Cerrar panel">✖</button>
+    </div>
+
+    {{!  TARJETA DE BIENVENIDA  }}
+    {{! Pasar config al JS  }}
+    <div id="slm-panel-config"
+         data-can-request="{{can_request}}"
+         data-habilitar-temas="{{habilitar_temas_conceptos}}"
+         data-habilitar-recursos="{{habilitar_recursos}}"
+         data-habilitar-ejemplos="{{habilitar_ejemplos}}"
+         data-solicitudes-usadas="{{solicitudes_usadas}}"
+         data-max-solicitudes="{{max_solicitudes}}"
+         style="display:none;">
+    </div>
+
+    <div class="slm-card slm-card--welcome">
+        <h4 class="slm-welcome-title">{{str_welcome_title}}</h4>
+        <p class="slm-welcome-body">{{str_welcome_body}}</p>
+
+        {{! Boton activo: el profesor permite y se cumplen los requisitos }}
+        {{#can_request}}
+        <button id="slm-get-help-btn" class="slm-btn-primary">
+            {{str_get_help}}
+        </button>
+        {{/can_request}}
+
+        {{! Boton deshabilitado: mostrar motivo }}
+        {{^can_request}}
+        <button id="slm-get-help-btn" class="slm-btn-primary" disabled style="opacity:0.5; cursor:not-allowed;">
+            {{str_get_help}}
+        </button>
+        {{#blocked_msg}}
+        <p class="slm-blocked-msg"> i {{blocked_msg}}</p>
+        {{/blocked_msg}}
+        {{/can_request}}
+
+        {{! Contador de solicitudes }}
+        {{#habilitar_ayuda}}
+        <div id="slm-request-counter" class="slm-request-counter">
+            <span id="slm-requests-used">{{solicitudes_usadas}}</span> / {{max_solicitudes}} solicitudes usadas
+        </div>
+        {{/habilitar_ayuda}}
+
+        {{! Mensaje de carga }}
+        <div id="slm-loading" class="slm-loading hidden" role="status" aria-live="polite">
+            <span class="slm-loading-spinner"></span>
+            <span>{{str_processing}}</span>
+        </div>
+    </div>
+
+    {{!  SECCIÓN DE RESULTADOS  }}
+    <div id="slm-results" class="slm-results hidden">
+
+        {{! Estado del análisis }}
+        <div class="slm-card slm-card--analysis">
+            <p class="slm-section-label">{{str_analysis_label}}</p>
+            <div id="slm-analysis-message" class="slm-analysis-message"></div>
+        </div>
+
+        {{! Encabezado de errores }}
+        {{! Encabezado de errores }}
+        <div class="slm-errors-header">
+            <h4 class="slm-errors-heading">{{str_errors_title}}</h4>
+            <p class="slm-section-desc">{{str_errors_desc}}</p>
+        </div>
+
+        {{! Contenedor de errores → generado dinámicamente por student_panel.js }}
+        <div id="slm-errors-container"></div>
+
+    </div>
+
+</div>
+
+{{!  MODAL DE EJEMPLOS  }}
+<div id="slm-example-modal" class="slm-modal hidden" role="dialog" aria-modal="true" aria-labelledby="slm-modal-title">
+    <div class="slm-modal-overlay" id="slm-modal-overlay"></div>
+    <div class="slm-modal-box">
+
+        {{! Cabecera del modal }}
+        <div class="slm-modal-header">
+            <div class="slm-modal-header-info">
+                <p class="slm-section-label">Ejemplo de código</p>
+                <h3 id="slm-modal-title" class="slm-modal-title"></h3>
+            </div>
+            <button id="slm-modal-close" class="slm-btn-close" aria-label="Cerrar ejemplo">✖</button>
+        </div>
+
+        {{! descrip del ejemplo }}
+        <div class="slm-modal-section">
+            <p class="slm-inline-title">¿Qué debes hacer?</p>
+            <p id="slm-modal-descripcion" class="slm-modal-text"></p>
+        </div>
+
+        {{! codigo del ejemplo }}
+        <div class="slm-modal-section">
+            <p class="slm-inline-title">Código de ejemplo</p>
+            <pre id="slm-modal-codigo" class="slm-code-block"></pre>
+        </div>
+
+        {{! explicacion paso a paso }}
+        <div class="slm-modal-section">
+            <p class="slm-inline-title">Explicación</p>
+            <p id="slm-modal-explicacion" class="slm-modal-text"></p>
+        </div>
+
+        {{! resultado esperado }}
+        <div class="slm-modal-section">
+            <p class="slm-inline-title">Resultado esperado</p>
+            <pre id="slm-modal-resultado" class="slm-code-block slm-code-block--output"></pre>
+        </div>
+
+        <div class="slm-modal-footer">
+            <button id="slm-modal-close-btn" class="slm-btn-primary" style="max-width:160px;">
+                Cerrar ejemplo
+            </button>
+        </div>
+    </div>
+</div>

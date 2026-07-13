@@ -1,0 +1,112 @@
+{{!
+    Subvista Conceptos de la Vista General del profesor.
+    Organiza los conceptos del catálogo por tema, mostrando errores frecuentes y recursos.
+}}
+
+{{! Sin temas en el catalogo }}
+{{^has_temas}}
+<div class="alert alert-warning d-flex gap-3 align-items-start mt-2">
+    <i class="fa fa-triangle-exclamation fa-lg mt-1"></i>
+    <div>
+        <strong>{{str_concepts_no_catalog}}</strong>
+        <p class="mb-1 mt-1">{{str_concepts_no_catalog_body}}</p>
+        <a href="{{url_catalog}}" class="btn btn-sm btn-outline-warning">{{str_concepts_go_catalog}}</a>
+    </div>
+</div>
+{{/has_temas}}
+
+{{! lista de temas y conceptos }}
+{{#has_temas}}
+{{#temas}}
+<div class="card mb-4">
+    <div class="card-header bg-light d-flex align-items-center gap-2 py-2">
+        <button type="button" class="btn btn-sm btn-link p-0 text-dark"
+                data-bs-toggle="collapse" data-bs-target="#slm-tema-{{temaid}}">
+            <i class="fa fa-chevron-down fa-fw"></i>
+        </button>
+        <strong>{{nombre}}</strong>
+        <span class="badge bg-secondary ms-auto">{{count}} concepto{{#count_plural}}s{{/count_plural}}</span>
+    </div>
+
+    <div class="collapse show" id="slm-tema-{{temaid}}">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle slm-general-table mb-0">
+                <thead class="table-light" style="border-top: none;">
+                    <tr>
+                        <th style="width:20%;">{{str_col_concept}}</th>
+                        <th class="text-center" style="width:8%;">{{str_col_occurrences}}</th>
+                        <th style="width:30%;">{{str_col_errors}}</th>
+                        <th style="width:30%;">{{str_col_resources}}</th>
+                        <th class="text-center" style="width:12%;">{{str_col_detail}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#conceptos}}
+                    <tr>
+                        {{! Nombre del concepto }}
+                        <td>
+                            <span class="slm-tag slm-tag-concept">
+                                <i class="fa fa-lightbulb fa-fw"></i> {{nombre}}
+                            </span>
+                        </td>
+                        {{! Ocurrencias }}
+                        <td class="text-center">
+                            {{#has_data}}
+                            <span class="badge bg-primary rounded-pill">{{occurrences}}</span>
+                            {{/has_data}}
+                            {{^has_data}}
+                            <span class="text-muted small">0</span>
+                            {{/has_data}}
+                        </td>
+                        {{! Errores frecuentes }}
+                        <td>
+                            {{#has_errors}}
+                            {{#top_errors}}
+                            <div class="slm-tag slm-tag-error mb-1">
+                                <i class="fa fa-bug fa-fw"></i> {{titulo}}
+                                <span class="ms-1 opacity-75" style="font-size:10px;">(×{{count}})</span>
+                            </div>
+                            {{/top_errors}}
+                            {{/has_errors}}
+                            {{^has_errors}}
+                            <span class="text-muted small">—</span>
+                            {{/has_errors}}
+                        </td>
+                        {{! Recursos del profesor }}
+                        <td>
+                            {{#has_resources}}
+                            {{#resources}}
+                            <div class="mb-1">
+                                {{#url}}
+                                <a href="{{url}}" target="_blank" class="slm-tag slm-tag-resource text-decoration-none">
+                                    <i class="fa fa-book fa-fw"></i> {{titulo}}
+                                    <i class="fa fa-external-link fa-fw" style="font-size:9px;"></i>
+                                </a>
+                                {{/url}}
+                                {{^url}}
+                                <span class="slm-tag slm-tag-resource">
+                                    <i class="fa fa-book fa-fw"></i> {{titulo}}
+                                </span>
+                                {{/url}}
+                            </div>
+                            {{/resources}}
+                            {{/has_resources}}
+                            {{^has_resources}}
+                            <span class="text-muted small">—</span>
+                            {{/has_resources}}
+                        </td>
+                        {{! Ver detalle }}
+                        <td class="text-center">
+                            <a href="{{detail_url}}" class="btn btn-sm btn-outline-primary">
+                                {{str_view_detail}} <i class="fa fa-arrow-right fa-fw"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/conceptos}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{/temas}}
+{{/has_temas}}

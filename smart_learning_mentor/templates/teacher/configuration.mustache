@@ -1,0 +1,243 @@
+{{!
+    Vista Configuracion del profesor: tabla de VPLs con toggles y campos numericos.
+
+}}
+
+<div class="slm-report-wrapper" id="slm-config-root" data-courseid="{{courseid}}">
+
+    {{! PESTANIAS }}
+    <ul class="nav nav-tabs mb-0" role="tablist">
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_general}}active{{/active_general}}" href="{{nav_general_url}}" role="tab">{{str_nav_general}}</a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_catalog}}active{{/active_catalog}}" href="{{nav_catalog_url}}" role="tab">{{str_nav_catalog}}</a>
+        </li>
+        <li class="nav-item" role="none">
+            <a class="nav-link {{#active_config}}active{{/active_config}}" href="{{nav_config_url}}" role="tab">{{str_nav_config}}</a>
+        </li>
+    </ul>
+
+    {{! CONTENIDO }}
+    <div class="tab-content border border-top-0 rounded-bottom p-3 bg-white">
+
+        {{! HEADER }}
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <div>
+                <h5 class="mb-0">{{str_config_title}}</h5>
+                <div class="text-muted small">{{str_config_subtitle}}</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span id="slm-config-save-msg" class="text-success small d-none"></span>
+                <button type="button" class="btn btn-primary btn-sm" id="slm-config-save-btn">
+                    {{str_config_save_btn}}
+                </button>
+            </div>
+        </div>
+
+        {{! VALORES POR DEFECTO }}
+        <div class="alert alert-info mb-4">
+            <div class="fw-semibold mb-1">{{str_config_default_info}}</div>
+            <ul class="mb-0 mt-2">
+                <li>{{str_config_default_minenvios}}</li>
+                <li>{{str_config_default_maxsolic}}</li>
+            </ul>
+        </div>
+
+        {{! FILTROS }}
+        <div class="card mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <strong>{{str_config_filters_title}}</strong>
+                <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#slm-config-filters">
+                    {{str_config_filters_show}}
+                </button>
+            </div>
+            <div id="slm-config-filters" class="collapse show">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-lg-5">
+                            <label class="form-label">{{str_config_search_label}}</label>
+                            <input type="text" class="form-control" id="slm-config-search"
+                                   placeholder="{{str_config_search_placeholder}}">
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            <label class="form-label">{{str_config_section_label}}</label>
+                            <select class="form-select" id="slm-config-section-filter">
+                                <option value="">{{str_config_section_all}}</option>
+                                {{#section_options}}
+                                <option value="{{sectionnum}}">{{label}}</option>
+                                {{/section_options}}
+                            </select>
+                        </div>
+                        <div class="col-12 col-lg-3 d-flex align-items-end">
+                            <button class="btn btn-outline-secondary w-100" type="button" id="slm-config-reset">
+                                {{str_config_reset_filters}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{! TABLA DE ACTIVIDADES VPL }}
+        <div class="card mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{str_config_table_title}}</strong>
+                    <div class="text-muted small">{{str_config_table_subtitle}}</div>
+                </div>
+                <span class="badge bg-secondary" id="slm-config-visible-count">
+                    {{vplactivitycount}}
+                </span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="min-width:240px;">{{str_config_col_activity}}</th>
+
+                            <th class="text-center" style="min-width:150px;">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <span>{{str_config_col_help}}</span>
+                                    <span tabindex="0"
+                                          data-bs-toggle="tooltip"
+                                          title="{{str_config_help_tooltip}}">
+                                        <i class="fa fa-circle-question text-info fa-fw"></i>
+                                    </span>
+                                </div>
+                            </th>
+
+                            <th class="text-center" style="min-width:170px;">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <span>{{str_config_col_resources}}</span>
+                                    <span tabindex="0"
+                                          data-bs-toggle="tooltip"
+                                          title="{{str_config_resources_tooltip}}">
+                                        <i class="fa fa-circle-question text-info fa-fw"></i>
+                                    </span>
+                                </div>
+                            </th>
+
+                            <th class="text-center" style="min-width:140px;">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <span>{{str_config_col_examples}}</span>
+                                    <span tabindex="0"
+                                          data-bs-toggle="tooltip"
+                                          title="{{str_config_examples_tooltip}}">
+                                        <i class="fa fa-circle-question text-info fa-fw"></i>
+                                    </span>
+                                </div>
+                            </th>
+
+                            <th class="text-center" style="min-width:120px;">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <span>{{str_config_col_minenvios}}</span>
+                                    <span tabindex="0"
+                                          data-bs-toggle="tooltip"
+                                          title="{{str_config_minenvios_tooltip}}">
+                                        <i class="fa fa-circle-question text-info fa-fw"></i>
+                                    </span>
+                                </div>
+                            </th>
+
+                            <th class="text-center" style="min-width:140px;">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <span>{{str_config_col_maxsolic}}</span>
+                                    <span tabindex="0"
+                                          data-bs-toggle="tooltip"
+                                          title="{{str_config_maxsolic_tooltip}}">
+                                        <i class="fa fa-circle-question text-info fa-fw"></i>
+                                    </span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="slm-config-table-body">
+
+                        {{#vplactivities}}
+                        <tr class="slm-config-row"
+                            data-vplid="{{vplid}}"
+                            data-cmid="{{cmid}}"
+                            data-sectionnum="{{sectionnum}}"
+                            data-activity-name="{{activityname}}">
+
+                            {{! Nombre Y seccion Y estado }}
+                            <td>
+                                <div class="fw-semibold">{{activityname}}</div>
+                                <div class="text-muted small">{{sectionname}}</div>
+                                <div class="mt-1">
+                                    <span class="badge {{statusclass}}">{{statuslabel}}</span>
+                                    <a href="{{activityurl}}" target="_blank" rel="noreferrer" class="ms-2 small">
+                                        {{str_config_open_vpl}}
+                                    </a>
+                                </div>
+                            </td>
+
+                            {{! Habilitar ayuda }}
+                            <td class="text-center">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input slm-toggle-help"
+                                           type="checkbox"
+                                           role="switch"
+                                           {{#habilitar_ayuda}}checked{{/habilitar_ayuda}}>
+                                </div>
+                            </td>
+
+                            {{! Conceptos y recursos }}
+                            <td class="text-center">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input slm-toggle-resources"
+                                           type="checkbox"
+                                           role="switch"
+                                           {{#habilitar_recursos}}checked{{/habilitar_recursos}}
+                                           {{^habilitar_ayuda}}disabled{{/habilitar_ayuda}}>
+                                </div>
+                            </td>
+
+                            {{!  Ejemplos IA}}
+                            <td class="text-center">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input slm-toggle-examples"
+                                           type="checkbox"
+                                           role="switch"
+                                           {{#habilitar_ejemplos}}checked{{/habilitar_ejemplos}}
+                                           {{^habilitar_ayuda}}disabled{{/habilitar_ayuda}}>
+                                </div>
+                            </td>
+
+                            {{! Minimo de envios }}
+                            <td class="text-center">
+                                <input type="number"
+                                       class="form-control form-control-sm text-center slm-config-minenvios"
+                                       min="1" max="100"
+                                       value="{{min_envios}}"
+                                       style="width:70px;margin:auto;">
+                            </td>
+
+                            {{! Maximo de solicitudes }}
+                            <td class="text-center">
+                                <input type="number"
+                                       class="form-control form-control-sm text-center slm-config-maxsolic"
+                                       min="1" max="20"
+                                       value="{{max_solicitudes}}"
+                                       style="width:70px;margin:auto;">
+                            </td>
+                        </tr>
+                        {{/vplactivities}}
+
+                        {{^vplactivities}}
+                        <tr>
+                            <td colspan="6">
+                                <div class="alert alert-info mb-0">{{str_config_no_vpls}}</div>
+                            </td>
+                        </tr>
+                        {{/vplactivities}}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

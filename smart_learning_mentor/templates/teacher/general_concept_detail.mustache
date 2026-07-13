@@ -1,0 +1,126 @@
+{{!
+    Subvista detalle de un concepto: errores completos con ejemplos IA + recursos.
+
+}}
+
+{{! Breadcrumb }}
+<nav class="mb-3">
+    <ol class="breadcrumb mb-0 small">
+        <li class="breadcrumb-item"><a href="{{back_url}}">{{str_back}}</a></li>
+        {{#concepto}}
+        <li class="breadcrumb-item text-muted">{{tema}}</li>
+        <li class="breadcrumb-item active">{{nombre}}</li>
+        {{/concepto}}
+    </ol>
+</nav>
+
+{{! Cabecera del concepto }}
+{{#concepto}}
+<div class="d-flex align-items-center gap-3 mb-4">
+    <span class="slm-tag slm-tag-concept" style="font-size:15px; padding: 6px 14px;">
+        <i class="fa fa-lightbulb fa-fw"></i> {{nombre}}
+    </span>
+    <span class="text-muted small">{{str_tema_label}}: <strong>{{tema}}</strong></span>
+</div>
+{{/concepto}}
+
+<div class="row g-4">
+
+    {{!  errores y ejemplos IA }}
+    <div class="col-12 col-lg-8">
+        <h6 class="fw-semibold mb-3">
+            <i class="fa fa-bug fa-fw text-danger me-1"></i>{{str_errors_title}}
+        </h6>
+
+        {{#has_errors}}
+        <div class="d-flex flex-column gap-3">
+            {{#errors}}
+            <div class="card border slm-history-card">
+                <div class="card-header py-2 d-flex align-items-center gap-3 flex-wrap">
+                    {{! Severidad }}
+                    <span class="slm-tag slm-tag-error">
+                        <i class="fa fa-bug fa-fw"></i> {{titulo}}
+                    </span>
+                    <div class="d-flex gap-2 ms-auto align-items-center flex-shrink-0">
+                        {{#porcentaje}}
+                        <span class="badge bg-danger bg-opacity-75" style="font-size:11px;">
+                            {{porcentaje}}%
+                        </span>
+                        {{/porcentaje}}
+                        <span class="badge bg-secondary" style="font-size:11px;">
+                            x{{ocurrencias}} {{str_occurrences}}
+                        </span>
+                        <span class="badge
+                            {{#severidad_high}}bg-danger{{/severidad_high}}
+                            {{#severidad_medium}}bg-warning text-dark{{/severidad_medium}}
+                            {{#severidad_low}}bg-info text-dark{{/severidad_low}}"
+                            style="font-size:11px;">
+                            {{severidad}}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body py-3">
+                    {{#descripcion}}
+                    <p class="small text-muted mb-2">{{descripcion}}</p>
+                    {{/descripcion}}
+                    {{#recomendacion}}
+                    <div class="alert alert-light border-start border-primary border-3 py-2 px-3 mb-2">
+                        <div class="small fw-semibold mb-1">{{str_recommendation}}</div>
+                        <div class="small">{{recomendacion}}</div>
+                    </div>
+                    {{/recomendacion}}
+                    {{! Ejemplos IA como subfilas }}
+                    {{#has_ejemplos}}
+                    <div class="mt-2">
+                        <div class="small fw-semibold text-muted mb-2">
+                            <i class="fa fa-robot fa-fw"></i> {{str_ia_examples}}
+                        </div>
+                        {{#ejemplos}}
+                        <div class="slm-example-block mb-2">
+                            <div class="small fw-semibold">{{titulo}}</div>
+                            {{#codigo}}
+                            <pre class="slm-code-block"><code>{{codigo}}</code></pre>
+                            {{/codigo}}
+                        </div>
+                        {{/ejemplos}}
+                    </div>
+                    {{/has_ejemplos}}
+                </div>
+            </div>
+            {{/errors}}
+        </div>
+        {{/has_errors}}
+        {{^has_errors}}
+        <div class="alert alert-info">{{str_no_errors}}</div>
+        {{/has_errors}}
+    </div>
+
+    {{! Columna derecha: recursos del profesor }}
+    <div class="col-12 col-lg-4">
+        <h6 class="fw-semibold mb-3">
+            <i class="fa fa-book fa-fw text-success me-1"></i>{{str_resources_title}}
+        </h6>
+        {{#has_resources}}
+        <div class="d-flex flex-column gap-2">
+            {{#resources}}
+            <div class="card border p-2 d-flex flex-row align-items-center gap-2">
+                <i class="fa fa-book fa-fw text-success"></i>
+                <div class="flex-grow-1" style="min-width:0;">
+                    <div class="small fw-semibold text-truncate">{{titulo}}</div>
+                    <div class="text-muted" style="font-size:11px;">{{tipo}}</div>
+                </div>
+                {{#url}}
+                <a href="{{url}}" target="_blank" class="btn btn-sm btn-outline-success flex-shrink-0">
+                    <i class="fa fa-external-link fa-fw"></i>
+                </a>
+                {{/url}}
+            </div>
+            {{/resources}}
+        </div>
+        {{/has_resources}}
+        {{^has_resources}}
+        <div class="alert alert-light border">{{str_no_resources}}</div>
+        {{/has_resources}}
+    </div>
+
+</div>

@@ -1,0 +1,239 @@
+{{!
+  lista de modulos del curso con asociacion a conceptos.
+    Se renderiza dentro de catalog.mustache cuando subview=resources.
+
+
+}}
+
+{{!  si no hay conceptos en el catalogo }}
+{{^has_concepts}}
+<div class="alert alert-warning d-flex align-items-start gap-3 mt-3">
+    <i class="fa fa-triangle-exclamation fa-fw fa-lg mt-1 text-warning"></i>
+    <div>
+        <strong>{{str_resources_no_concepts_title}}</strong>
+        <p class="mb-1 mt-1">{{str_resources_no_concepts_body}}</p>
+        <a href="{{url_topics}}" class="btn btn-sm btn-outline-warning">
+            {{str_resources_go_to_topics}}
+        </a>
+    </div>
+</div>
+{{/has_concepts}}
+
+{{! CONTENIDO PRINCIPAL}}
+{{#has_concepts}}
+<div class="slm-resources-layout mt-3" id="slm-resources-root" data-courseid="{{courseid}}">
+
+    {{! temas y conceptos disponibles }}
+    <div class="slm-resources-sidebar" id="slm-resources-sidebar">
+        <div class="slm-sidebar-header d-flex align-items-center p-2 border-bottom">
+            <button class="btn btn-sm btn-icon me-2" type="button" id="slm-resources-sidebar-toggle"
+                    title="{{str_resources_toggle_sidebar}}">
+                <i class="fa fa-bars fa-fw"></i>
+            </button>
+            <div>
+                <strong>{{str_resources_sidebar_title}}</strong>
+                <div class="text-muted small">{{str_resources_sidebar_sub}}</div>
+            </div>
+        </div>
+        <div class="slm-sidebar-body p-2">
+            {{#topics}}
+            <div class="mb-3">
+                <div class="fw-semibold small text-uppercase text-muted mb-1 px-1">{{name}}</div>
+                {{#concepts}}
+                <div class="px-2 py-1 small text-truncate">
+                    <i class="fa fa-circle fa-fw" style="font-size:6px; color:#6c757d;"></i>
+                    {{name}}
+                </div>
+                {{/concepts}}
+                {{^concepts}}
+                <div class="px-2 small text-muted">Sin conceptos</div>
+                {{/concepts}}
+            </div>
+            {{/topics}}
+            {{^topics}}
+            <p class="text-muted small p-2">No hay temas registrados.</p>
+            {{/topics}}
+        </div>
+    </div>
+
+    {{!  lista de modulos del curso }}
+    <div class="slm-resources-main">
+
+        {{! Cabecera }}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h6 class="mb-0">{{str_resources_main_title}}</h6>
+                <div class="text-muted small">{{str_resources_main_sub}}</div>
+            </div>
+            <span class="badge bg-secondary">{{total_modules}} {{str_resources_elements}}</span>
+        </div>
+
+        {{! Sin modulos }}
+        {{^has_modules}}
+        <div class="alert alert-info">{{str_resources_no_modules}}</div>
+        {{/has_modules}}
+
+        {{! cista de secciones y modulos }}
+        {{#course_modules}}
+        <div class="card mb-3">
+            {{! cabecera de seccion }}
+            <div class="card-header bg-light d-flex align-items-center gap-2 py-2">
+                <button type="button"
+                        class="btn btn-sm btn-link p-0 text-dark"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#slm-section-{{sectionid}}">
+                    <i class="fa fa-chevron-down fa-fw"></i>
+                </button>
+                <strong>{{sectionname}}</strong>
+                <span class="badge bg-secondary ms-auto">{{item_count}}</span>
+            </div>
+
+            {{! Items de la seccion }}
+            <div class="collapse show" id="slm-section-{{sectionid}}">
+                <ul class="list-group list-group-flush">
+                    {{#items}}
+                    <li class="list-group-item slm-resource-row px-3 py-2"
+                        data-cmid="{{cmid}}">
+                        <div class="d-flex align-items-start gap-3">
+
+                            {{! Icono del tipo de modulo }}
+                            <div class="slm-resource-icon mt-1 text-muted">
+                                {{{icon}}}
+                            </div>
+
+                            {{! Informacion del recurso }}
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold text-truncate">{{titulo}}</div>
+                                <div class="text-muted small">{{typelabel}}</div>
+
+                                {{! Chips de conceptos ya asociados }}
+                                <div class="slm-resource-concepts d-flex flex-wrap gap-1 mt-1">
+                                    {{#associated_concepts}}
+                                    <span class="slm-resource-concept-chip badge bg-primary" style="font-size:11px;">
+                                        {{nombre}}
+                                    </span>
+                                    {{/associated_concepts}}
+                                </div>
+                            </div>
+
+                            {{! Acciones }}
+                            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                {{#concept_count}}
+                                <span class="badge bg-info slm-resource-count-badge">
+                                    {{concept_count}} concepto{{#concept_count_plural}}s{{/concept_count_plural}}
+                                </span>
+                                {{/concept_count}}
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary slm-assign-resource-btn"
+                                        data-resource-id="{{id}}"
+                                        data-cmid="{{cmid}}"
+                                        data-courseid="{{courseid}}"
+                                        data-resource-title="{{titulo}}"
+                                        data-resource-type="{{typelabel}}"
+                                        data-associated-conceptids="{{conceptids_csv}}">
+                                    {{str_resources_associate_btn}}
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    {{/items}}
+                </ul>
+            </div>
+        </div>
+        {{/course_modules}}
+
+    </div>
+</div>
+
+{{! MODAL DE ASOCIACION }}
+<div class="modal fade" id="slm-association-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-1">{{str_resources_modal_title}}</h5>
+                    <div class="text-muted small">{{str_resources_modal_subtitle}}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                {{! Recurso seleccionado }}
+                <div class="alert alert-light border mb-3">
+                    <div class="fw-semibold small text-muted mb-1">{{str_resources_selected_resource}}</div>
+                    <div>
+                        <strong id="slm-modal-resource-title">---</strong>
+                        <span class="text-muted small ms-2" id="slm-modal-resource-type"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+
+                    {{! Conceptos disponibles }}
+                    <div class="col-12 col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <strong>{{str_resources_modal_concepts}}</strong>
+                                <input type="text"
+                                       class="form-control form-control-sm"
+                                       id="slm-concept-search"
+                                       placeholder="{{str_resources_modal_search}}"
+                                       style="max-width:200px;">
+                            </div>
+                            <div class="card-body" style="max-height:340px; overflow-y:auto;">
+                                {{#topics}}
+                                <div class="mb-3 slm-modal-topic-group">
+                                    <div class="fw-semibold small text-muted text-uppercase mb-2">{{name}}</div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {{#concepts}}
+                                        <label class="slm-concept-pill d-inline-flex align-items-center gap-1
+                                                      border rounded px-2 py-1 cursor-pointer"
+                                               style="cursor:pointer;">
+                                            <input type="checkbox"
+                                                   class="form-check-input m-0 slm-concept-checkbox"
+                                                   value="{{id}}"
+                                                   data-concept-name="{{name}}">
+                                            <span class="small">{{name}}</span>
+                                        </label>
+                                        {{/concepts}}
+                                        {{^concepts}}
+                                        <span class="text-muted small">Sin conceptos en este tema.</span>
+                                        {{/concepts}}
+                                    </div>
+                                </div>
+                                {{/topics}}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! Resumen de seleccion }}
+                    <div class="col-12 col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white">
+                                <strong>{{str_resources_modal_summary}}</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-muted small mb-2">{{str_resources_modal_selected}}</div>
+                                <div id="slm-selected-concepts" class="d-flex flex-wrap gap-2">
+                                    <span class="text-muted small">{{str_resources_modal_none}}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        data-bs-dismiss="modal">
+                                    {{str_resources_modal_cancel}}
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        id="slm-associate-save-btn">
+                                    {{str_resources_modal_save}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/has_concepts}}

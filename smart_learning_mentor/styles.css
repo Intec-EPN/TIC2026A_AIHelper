@@ -1,0 +1,776 @@
+/* ================================================================
+   SMART LEARNING MENTOR (slm) — Hoja de estilos principal
+   ================================================================ */
+
+/* ── 1. VARIABLES GLOBALES ─────────────────────────────────────── */
+:root {
+    --slm-color-primary:       #4f46e5;
+    --slm-color-primary-dark:  #4338ca;
+    --slm-color-primary-light: #eef2ff;
+    --slm-color-success:       #10b981;
+    --slm-color-warning:       #f59e0b;
+    --slm-color-danger:        #ef4444;
+    --slm-color-ai:            #7c3aed;
+    --slm-color-ai-light:      #f5f3ff;
+
+    --slm-bg-panel:    #f1f5f9;
+    --slm-bg-card:     #ffffff;
+    --slm-bg-welcome:  linear-gradient(135deg, #eef2ff, #f8fbff);
+    --slm-bg-tab:      linear-gradient(135deg, #9ebbf8, #889acc);
+
+    --slm-border:      #e6eaef;
+    --slm-text-body:   #111827;
+    --slm-text-muted:  #6b7280;
+    --slm-text-label:  #64748b;
+
+    --slm-radius-card: 10px;
+    --slm-radius-btn:  8px;
+    --slm-radius-chip: 6px;
+
+    --slm-shadow-card:  0 1px 2px rgba(15,23,42,.04);
+    --slm-shadow-panel: -2px 0 8px rgba(0,0,0,.15);
+    --slm-shadow-tab:   -4px 4px 15px rgba(0,0,0,.2);
+    --slm-shadow-modal: 0 20px 60px rgba(0,0,0,.25);
+
+    --slm-panel-width: 320px;
+    --slm-transition:  .3s ease;
+}
+
+/* ── 2. BOTÓN FLOTANTE ─────────────────────────────────────────── */
+#slm-tab-button {
+    position:      fixed;
+    right:         0;
+    top:           50%;
+    transform:     translateY(-50%);
+    background:    var(--slm-bg-tab);
+    padding:       8px;
+    border-radius: 12px 0 0 12px;
+    cursor:        pointer;
+    z-index:       9999;
+    box-shadow:    var(--slm-shadow-tab);
+    transition:    transform var(--slm-transition);
+}
+#slm-tab-button:hover,
+#slm-tab-button:focus-visible {
+    transform: translateY(-50%) scale(1.05);
+    outline:   2px solid var(--slm-color-primary);
+}
+.slm-tab-icon { width:45px; height:45px; display:block; }
+
+/* ── 3. PANEL PRINCIPAL ────────────────────────────────────────── */
+.slm-panel {
+    position:   fixed;
+    top:        0;
+    right:      calc(-1 * var(--slm-panel-width) - 10px);
+    width:      var(--slm-panel-width);
+    height:     100%;
+    background: var(--slm-bg-panel);
+    box-shadow: var(--slm-shadow-panel);
+    transition: right var(--slm-transition);
+    z-index:    2147483647;/*9998*/
+    padding:    15px;
+    overflow-y: auto;
+}
+.slm-panel--open { right: 0; }
+
+/* ── 4. CABECERA ───────────────────────────────────────────────── */
+.slm-panel-header {
+    display:flex; justify-content:space-between;
+    align-items:flex-start; gap:10px; margin-bottom:4px;
+}
+.slm-panel-title   { margin:0; font-size:16px; font-weight:700; color:var(--slm-text-body); }
+.slm-panel-subtitle{ font-size:12px; color:var(--slm-text-muted); margin:0; }
+.slm-btn-close {
+    background:none; border:none; font-size:16px; cursor:pointer;
+    color:var(--slm-text-muted); padding:2px 4px; border-radius:4px;
+    transition:background var(--slm-transition);
+}
+.slm-btn-close:hover { background:var(--slm-border); }
+
+/* ── 5. TARJETAS ───────────────────────────────────────────────── */
+.slm-card {
+    background:var(--slm-bg-card); border-radius:var(--slm-radius-card);
+    padding:12px; margin-top:12px;
+    border:1px solid var(--slm-border); box-shadow:var(--slm-shadow-card);
+}
+.slm-card--welcome       { background:var(--slm-bg-welcome); }
+.slm-card--analysis      { margin-bottom:0; }
+.slm-card--section-header{ margin-top:0; }
+.slm-card--empty         { color:var(--slm-text-muted); font-size:13px; }
+.slm-card--error         { padding:0; overflow:hidden; }
+
+/* ── 6. BIENVENIDA ─────────────────────────────────────────────── */
+.slm-welcome-title { margin:0 0 6px; font-size:15px; font-weight:700; color:var(--slm-text-body); }
+.slm-welcome-body  { font-size:13px; color:var(--slm-text-muted); margin:0 0 4px; }
+
+/* ── 7. BOTÓN PRINCIPAL ────────────────────────────────────────── */
+.slm-btn-primary {
+    width:100%; margin-top:10px; padding:10px;
+    background:var(--slm-color-primary); color:white;
+    border:none; border-radius:var(--slm-radius-btn);
+    cursor:pointer; font-size:14px; font-weight:600;
+    transition:background var(--slm-transition);
+}
+.slm-btn-primary:hover { background:var(--slm-color-primary-dark); }
+
+/* ── 8. CARGA ──────────────────────────────────────────────────── */
+.slm-loading {
+    display:flex; align-items:center; gap:8px;
+    margin-top:12px; padding:10px;
+    border-radius:var(--slm-radius-btn);
+    background:#f3f4f6; color:#374151;
+    font-size:13px; border:1px solid var(--slm-border);
+}
+.slm-loading-spinner {
+    display:inline-block; width:14px; height:14px;
+    border:2px solid var(--slm-border);
+    border-top:2px solid var(--slm-color-primary);
+    border-radius:50%;
+    animation:slm-spin .8s linear infinite; flex-shrink:0;
+}
+@keyframes slm-spin { to { transform:rotate(360deg); } }
+
+/* ── 9. RESULTADOS ─────────────────────────────────────────────── */
+.slm-results { margin-top:0; }
+.slm-section-label {
+    margin:0 0 4px; font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--slm-text-label);
+}
+.slm-section-title   { margin:0 0 4px; font-size:15px; font-weight:700; color:var(--slm-text-body); }
+.slm-section-desc    { margin:4px 0 0; font-size:12px; color:var(--slm-text-muted); }
+.slm-analysis-message{ margin-top:6px; font-size:14px; color:var(--slm-text-body); line-height:1.5; }
+
+/* ── 10. ERROR: CABECERA ACORDEÓN ──────────────────────────────── */
+.slm-error-header {
+    width:100%; background:var(--slm-bg-card); border:none;
+    padding:12px 14px; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:10px; text-align:left; transition:background var(--slm-transition);
+}
+.slm-error-header:hover { background:#fafafa; }
+.slm-error-header-left  { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.slm-error-title        { font-weight:700; font-size:14px; color:var(--slm-text-body); }
+
+/* ── 11. BADGES ────────────────────────────────────────────────── */
+.slm-badge {
+    padding:3px 8px; border-radius:var(--slm-radius-chip);
+    font-size:11px; color:white; font-weight:700; white-space:nowrap;
+}
+.slm-badge--high   { background:var(--slm-color-danger); }
+.slm-badge--medium { background:var(--slm-color-warning); }
+.slm-badge--low    { background:var(--slm-color-success); }
+
+/* ── 12. ERROR: CUERPO ─────────────────────────────────────────── */
+.slm-error-body {
+    border-top:1px solid var(--slm-border);
+    padding:12px 14px 14px;
+    font-size:13px; color:#374151; line-height:1.5;
+}
+.slm-error-meta {
+    display:flex; flex-wrap:wrap; gap:10px;
+    margin-bottom:10px; color:var(--slm-text-label); font-size:12px;
+}
+
+/* ── 13. FLECHA ACORDEÓN ───────────────────────────────────────── */
+.slm-arrow { transition:transform var(--slm-transition); font-size:12px; color:var(--slm-text-muted); flex-shrink:0; }
+.slm-arrow--open { transform:rotate(180deg); }
+
+/* ── 14. MINI-ACORDEÓN ─────────────────────────────────────────── */
+.slm-mini-accordion { display:flex; flex-direction:column; gap:8px; }
+.slm-mini-accordion-item {
+    border:1px solid var(--slm-border); border-radius:var(--slm-radius-card);
+    overflow:hidden; background:var(--slm-bg-card);
+}
+.slm-mini-accordion-header {
+    width:100%; border:none; background:#f8fafc; padding:9px 12px;
+    cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    text-align:left; font-size:12px; font-weight:700; color:var(--slm-text-body);
+    transition:background var(--slm-transition);
+}
+.slm-mini-accordion-header:hover { background:var(--slm-color-primary-light); }
+.slm-mini-accordion-content      { padding:8px 12px 12px; }
+
+/* ── 15. SECCIONES INLINE ──────────────────────────────────────── */
+.slm-inline-section  { margin-top:12px; }
+.slm-inline-title    { font-size:13px; font-weight:700; margin-bottom:6px; color:var(--slm-text-body); }
+
+/* ── 16. CHIPS ─────────────────────────────────────────────────── */
+.slm-chip-group { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.slm-chip {
+    display:inline-flex; align-items:center;
+    padding:4px 9px; border-radius:var(--slm-radius-chip);
+    font-size:12px; font-weight:600;
+}
+.slm-chip--concept    { background:var(--slm-color-primary-light); color:#4338ca; }
+.slm-chip--resource   { background:#ecfeff; color:#0f766e; }
+.slm-chip--ai-concept { background:var(--slm-color-ai-light); color:var(--slm-color-ai); }
+
+/* ── 17. BLOQUE CONCEPTOS DEL PROFESOR ────────────────────────── */
+.slm-teacher-concept-item {
+    border:1px solid var(--slm-border); border-radius:var(--slm-radius-chip);
+    padding:8px 10px; margin-top:8px; background:#fafafa;
+}
+.slm-teacher-resources       { margin-top:6px; padding-left:4px; }
+.slm-teacher-resources-label { font-size:11px; font-weight:700; color:var(--slm-text-label); margin:0 0 4px; }
+
+/* ── 18. NOTA DE CONCEPTOS IA ──────────────────────────────────── */
+.slm-ai-concepts-note {
+    font-size:11px; color:var(--slm-text-muted);
+    margin:0 0 8px; font-style:italic;
+}
+
+/* ── 19. LISTA DE EJEMPLOS ─────────────────────────────────────── */
+.slm-examples-list { display:flex; flex-direction:column; gap:6px; margin-top:4px; }
+.slm-example-title-btn {
+    display:flex; align-items:center; gap:8px;
+    width:100%; border:1px solid var(--slm-border);
+    background:#fff; border-radius:var(--slm-radius-chip);
+    padding:8px 10px; cursor:pointer; text-align:left;
+    transition:background var(--slm-transition), border-color var(--slm-transition);
+}
+.slm-example-title-btn:hover {
+    background:var(--slm-color-primary-light);
+    border-color:var(--slm-color-primary);
+}
+.slm-example-icon  { font-size:14px; flex-shrink:0; }
+.slm-example-label { flex:1; font-size:12px; font-weight:600; color:var(--slm-text-body); }
+.slm-example-open  { font-size:11px; color:var(--slm-color-primary); font-weight:700; flex-shrink:0; }
+
+/* ── 20. MODAL DE EJEMPLOS ─────────────────────────────────────── */
+.slm-modal {
+    position:fixed; inset:0;
+    z-index:10000;
+    display:flex; align-items:center; justify-content:center;
+    padding:16px;
+}
+.slm-modal.hidden { display:none !important; }
+
+.slm-modal-overlay {
+    position:absolute; inset:0;
+    background:rgba(0,0,0,.5);
+    backdrop-filter:blur(2px);
+}
+
+.slm-modal-box {
+    position:relative; z-index:1;
+    background:#fff; border-radius:14px;
+    box-shadow:var(--slm-shadow-modal);
+    width:100%; max-width:600px;
+    max-height:90vh; overflow-y:auto;
+    padding:24px;
+    display:flex; flex-direction:column; gap:0;
+}
+
+.slm-modal-header {
+    display:flex; justify-content:space-between;
+    align-items:flex-start; gap:12px;
+    margin-bottom:20px;
+}
+.slm-modal-header-info { flex:1; }
+.slm-modal-title {
+    margin:4px 0 0; font-size:17px; font-weight:700;
+    color:var(--slm-text-body); outline:none;
+}
+
+.slm-modal-section { margin-bottom:18px; }
+.slm-modal-section:last-child { margin-bottom:0; }
+.slm-modal-text { font-size:14px; color:var(--slm-text-body); line-height:1.6; margin:6px 0 0; }
+
+/* Bloque de código dentro del modal */
+.slm-code-block {
+    background:#1e1e2e; color:#cdd6f4;
+    border-radius:8px; padding:14px 16px;
+    font-family:monospace; font-size:13px;
+    line-height:1.6; overflow-x:auto;
+    margin:6px 0 0; white-space:pre-wrap; word-break:break-word;
+}
+.slm-code-block--output {
+    background:#f0fdf4; color:#166534;
+    border:1px solid #bbf7d0;
+}
+
+.slm-modal-footer {
+    margin-top:20px; display:flex; justify-content:flex-end;
+}
+
+/* ── 21. UTILIDADES ────────────────────────────────────────────── */
+.slm-empty-inline { font-size:12px; color:var(--slm-text-muted); margin:4px 0 0; }
+.hidden           { display:none !important; }
+
+
+
+
+/* =========================================================
+   PANEL - Encabezado de errores (sin cuadrado, centrado)
+   ========================================================= */
+.slm-errors-header {
+    padding:    10px 16px 4px;
+    text-align: center;
+}
+
+.slm-errors-heading {
+    font-size:   16px;
+    font-weight: 700;
+    color:       #2d3748;
+    margin:      0 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.slm-errors-header .slm-section-desc {
+    font-size: 11px;
+    color:     #718096;
+    margin:    0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ── 22. SUBVISTA RECURSOS ─────────────────────────────────────── */
+
+/* Layout: sidebar + area principal */
+.slm-resources-layout {
+    display:   flex;
+    gap:       16px;
+    min-height: 400px;
+}
+
+/* Sidebar de temas y conceptos */
+.slm-resources-sidebar {
+    width:      220px;
+    flex-shrink: 0;
+    border:     1px solid var(--slm-border);
+    border-radius: var(--slm-radius-card);
+    background: #f8fafc;
+    transition: width var(--slm-transition);
+    overflow:   hidden;
+}
+
+.slm-resources-sidebar.collapsed {
+    width: 44px;
+}
+
+.slm-resources-sidebar.collapsed .slm-sidebar-body {
+    display: none;
+}
+
+.slm-sidebar-header {
+    background: #fff;
+    border-bottom: 1px solid var(--slm-border);
+}
+
+.slm-sidebar-body {
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+/* Area principal */
+.slm-resources-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Fila de recurso */
+.slm-resource-row {
+    transition: background var(--slm-transition);
+}
+.slm-resource-row:hover {
+    background: #f8fafc;
+}
+
+/* Chip de concepto asociado al recurso */
+.slm-resource-concept-chip {
+    display:       inline-flex;
+    align-items:   center;
+    padding:       2px 8px;
+    border-radius: 4px;
+    font-size:     11px;
+    font-weight:   600;
+    background:    var(--slm-color-primary-light);
+    color:         #4338ca;
+}
+
+/* Icono del tipo de recurso */
+.slm-resource-icon {
+    width:       28px;
+    text-align:  center;
+    flex-shrink: 0;
+}
+
+/* Pills de conceptos en el modal */
+.slm-concept-pill {
+    user-select:   none;
+    transition:    background var(--slm-transition), border-color var(--slm-transition);
+    font-size:     13px;
+}
+.slm-concept-pill:hover {
+    background:    var(--slm-color-primary-light);
+    border-color:  var(--slm-color-primary) !important;
+}
+.slm-concept-pill input:checked ~ span {
+    font-weight: 700;
+}
+
+
+
+
+
+
+/* =========================================================
+   VISTA GENERAL - TABLA DE ACTIVIDADES
+   ========================================================= */
+
+.slm-general-table th {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.slm-col-activity { width: 18%; }
+.slm-col-sm       { width: 8%; }
+.slm-col-md       { width: 14%; }
+
+/* Tags de items en la tabla */
+.slm-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size:     11px;
+    font-weight:   500;
+    max-width:     100%;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    white-space:   nowrap;
+}
+
+.slm-tag-error {
+    background: #fff1f0;
+    color:      #842029;
+    border:     1px solid #f1aeb5;
+    font-weight: 600;
+}
+
+.slm-tag-concept {
+    background: #f8f9fa;
+    color:      #343a40;
+    border:     1px solid #dee2e6;
+}
+
+.slm-tag-resource {
+    background: #f8f9fa;
+    color:      #343a40;
+    border:     1px solid #dee2e6;
+}
+
+.slm-tag-ia {
+    background: #f8f9fa;
+    color:      #343a40;
+    border:     1px solid #dee2e6;
+}
+
+.slm-tag-sm {
+    font-size: 10px;
+    padding:   1px 6px;
+}
+
+/* =========================================================
+   VISTA DETALLE ESTUDIANTE - CARDS DE HISTORIAL
+   ========================================================= */
+
+.slm-history-card {
+    border-radius: 8px;
+}
+
+/* Icono colapsable en historial */
+.slm-history-card .slm-collapse-icon {
+    transition: transform 0.2s ease;
+}
+.slm-history-card [aria-expanded="true"] .slm-collapse-icon {
+    transform: rotate(0deg);
+}
+.slm-history-card [aria-expanded="false"] .slm-collapse-icon {
+    transform: rotate(-90deg);
+}
+
+.slm-detail-section {
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+}
+
+.slm-detail-section-title {
+    font-size:   11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.slm-detail-error    { color: #9b2226; }
+.slm-detail-concept  { color: #3730a3; }
+.slm-detail-resource { color: #166534; }
+.slm-detail-ia       { color: #6b21a8; }
+
+.slm-detail-item {
+    display:     flex;
+    align-items: center;
+    gap:         4px;
+    flex-wrap:   wrap;
+}
+
+
+
+/* ── Tabla de detalle por solicitud ─────────────────────────────────── */
+.slm-detail-table th {
+    font-size:      11px;
+    font-weight:    600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color:          #6c757d;
+    white-space:    nowrap;
+}
+.slm-detail-table td {
+    font-size:      12px;
+    vertical-align: top;
+    padding:        10px 12px;
+}
+
+/* ── Badges de severidad ─────────────────────────────────────────────── */
+.slm-sev-badge {
+    font-size:     10px;
+    font-weight:   600;
+    padding:       2px 7px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+.slm-sev-high   { background:#fff5f5; color:#842029; border:1px solid #f1aeb5; }
+.slm-sev-medium { background:#fff9ed; color:#7d4e0c; border:1px solid #fde68a; }
+.slm-sev-low    { background:#f8f9fa; color:#495057; border:1px solid #dee2e6; }
+
+/* ── Recursos inline dentro de concepto ─────────────────────────────── */
+.slm-resource-list {
+    padding-left: 8px;
+    border-left:  2px solid #dee2e6;
+}
+.slm-resource-link {
+    font-size:       10px;
+    color:           #495057;
+    text-decoration: none;
+    line-height:     1.6;
+}
+.slm-resource-link:hover { color: #0d6efd; text-decoration: underline; }
+.slm-resource-link i     { font-size: 9px; margin-right: 3px; opacity: .6; }
+
+/* ── Modo edición ─────────────────────────────────────────────────────── */
+.slm-editing {
+    background:    #fffbeb;
+    border:        1px dashed #f59e0b;
+    border-radius: 3px;
+    padding:       2px 4px;
+    outline:       none;
+    min-width:     40px;
+    display:       inline-block;
+    width:         100%;
+}
+
+/* ── Collapse icon ───────────────────────────────────────────────────── */
+.slm-history-card .slm-collapse-icon {
+    transition: transform 0.2s ease;
+}
+.slm-history-card [aria-expanded="false"] .slm-collapse-icon {
+    transform: rotate(-90deg);
+}
+
+
+
+
+/* =========================================================
+   VISTA DETALLE CONCEPTO - Ejemplos IA
+   ========================================================= */
+
+.slm-example-block {
+    background:    #f8f9fa;
+    border:        1px solid #e9ecef;
+    border-radius: 6px;
+    padding:       10px 12px;
+}
+
+.slm-code-block {
+    background:    #1e1e2e;
+    color:         #cdd6f4;
+    border-radius: 6px;
+    padding:       10px 12px;
+    font-size:     12px;
+    margin-top:    6px;
+    margin-bottom: 0;
+    overflow-x:    auto;
+    white-space:   pre-wrap;
+    word-break:    break-word;
+}
+
+/* =========================================================
+   PANEL - Mensaje de bloqueo
+   ========================================================= */
+.slm-blocked-msg {
+    margin-top:    10px;
+    padding:       8px 12px;
+    background:    #fff8e1;
+    border:        1px solid #ffe082;
+    border-radius: 6px;
+    font-size:     12px;
+    color:         #5d4037;
+    line-height:   1.4;
+}
+
+/* =========================================================
+   PANEL - Contador de solicitudes
+   ========================================================= */
+.slm-request-counter {
+    margin-top:    8px;
+    font-size:     12px;
+    color:         #6c757d;
+    text-align:    center;
+}
+
+.slm-request-counter #slm-requests-used {
+    font-weight: 700;
+    color:       #495057;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   DETALLE ESTUDIANTE - Modo edición inline
+   ========================================================= */
+.slm-editable {
+    border-radius: 4px;
+    padding:       2px 4px;
+    transition:    background 0.15s;
+    min-height:    1.2em;
+}
+
+.slm-editable--active {
+    background:  #fffde7;
+    border:      1px dashed #f9a825;
+    cursor:      text;
+    outline:     none;
+}
+
+.slm-editable--active:focus {
+    background:  #fff8e1;
+    border-color: #f57f17;
+    box-shadow:  0 0 0 2px rgba(249,168,37,.25);
+}
+
+/* =========================================================
+   DETALLE ESTUDIANTE - Edición por campo con lápiz
+   ========================================================= */
+.slm-fw {
+    position: relative;
+    display:  inline-flex;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+}
+
+.slm-fv {
+    flex: 1;
+    min-width: 0;
+}
+
+.slm-pencil-btn {
+    flex-shrink: 0;
+    background:  none;
+    border:      none;
+    padding:     0 2px;
+    color:       #adb5bd;
+    cursor:      pointer;
+    line-height: 1;
+    display:     none;      /* oculto hasta modo edición */
+}
+
+.slm-pencil-btn:hover { color: #495057; }
+
+.slm-field-editor {
+    display: none;
+    width:   100%;
+}
+
+.slm-field-editor textarea {
+    width:     100%;
+    font-size: 12px;
+    padding:   4px 6px;
+    border:    1px solid #f9a825;
+    border-radius: 4px;
+    background: #fffde7;
+    resize:    vertical;
+    min-height: 52px;
+    outline:   none;
+}
+
+.slm-field-editor textarea:focus {
+    border-color: #f57f17;
+    box-shadow:   0 0 0 2px rgba(249,168,37,.25);
+}
+
+.slm-field-actions {
+    display:   flex;
+    gap:       4px;
+    margin-top: 4px;
+}
+
+/* Modal en modo edición */
+.slm-modal-field-editor { display: none; }
+.slm-modal-edit-active .slm-modal-field-val  { display: none !important; }
+.slm-modal-edit-active .slm-modal-field-editor { display: block; }
+.slm-modal-field-editor textarea {
+    width:     100%;
+    font-size: 13px;
+    padding:   6px 8px;
+    border:    1px solid #f9a825;
+    border-radius: 4px;
+    background: #fffde7;
+    resize:    vertical;
+    min-height: 60px;
+}
+.slm-modal-field-editor textarea:focus {
+    border-color: #f57f17;
+    box-shadow:   0 0 0 2px rgba(249,168,37,.25);
+    outline: none;
+}
