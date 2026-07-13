@@ -203,7 +203,7 @@ $string['topics_modal_concepts_required'] = 'You must add at least one concept b
 
 // Overview - columns and navigation.
 $string['col_activity']       = 'Activity';
-$string['col_students']       = 'Students';
+$string['col_students']       = '# Requests';
 $string['col_errors']         = 'Common errors';
 $string['col_concepts']       = 'Concepts';
 $string['col_resources']      = 'Resources';
