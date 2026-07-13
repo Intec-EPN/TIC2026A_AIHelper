@@ -33,9 +33,9 @@ require_once($CFG->libdir . '/externallib.php');
 
 class manage_concept extends \external_api {
 
-    public static function execute_parameters(): \external_function_parameters {
+    public static function execute_parameters(): \external_function_parameters { // extra, para agregar conceptos IA al catalogo
         return new \external_function_parameters([
-            'action' => new \external_value(PARAM_ALPHA, 'create | delete | promote_ai'),
+            'action' => new \external_value(PARAM_ALPHANUMEXT, 'create | delete | promote_ai'), 
             'courseid' => new \external_value(PARAM_INT, 'ID del curso'),
             'themeid' => new \external_value(PARAM_INT,   'ID del tema destino', VALUE_DEFAULT, 0),
             'conceptid' => new \external_value(PARAM_INT,   'ID del concepto (eliminar)', VALUE_DEFAULT, 0),
